@@ -15,22 +15,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.rattatto.smartvoca.data.WordRepository
+import com.rattatto.smartvoca.data.db.SmartVocaDatabase
+import com.rattatto.smartvoca.ui.ImportScreen
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // 앱 전체에서 DB 연결을 하나만 쓰도록 여기서 한 번만 만든다
+        val repository = WordRepository(SmartVocaDatabase.create(applicationContext))
         setContent {
             MaterialTheme {
-                StartScreen()
+                StartScreen(repository)
             }
         }
     }
 }
 
 @Composable
-fun StartScreen() {
+fun StartScreen(repository: WordRepository) {
     Surface(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -39,14 +43,7 @@ fun StartScreen() {
         ) {
             Text(text = "스마트보카")
             Text(text = "동사만 알아도 대박이다")
+            ImportScreen(repository)
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun StartScreenPreview() {
-    MaterialTheme {
-        StartScreen()
     }
 }

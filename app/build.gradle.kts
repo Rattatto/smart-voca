@@ -4,6 +4,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -55,5 +56,12 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
+    // Room: 로컬 DB (ADR-002). 컴파일러는 KSP 로 실행한다
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+
     testImplementation(libs.kotlin.test.junit)
+    // JVM 에서 Room 을 돌리기 위한 Robolectric (실기기 없이 DAO 테스트)
+    testImplementation(libs.robolectric)
 }
