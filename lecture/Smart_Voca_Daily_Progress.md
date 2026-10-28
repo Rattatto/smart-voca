@@ -70,6 +70,47 @@
   - 결정 사항 전체 반영, 미결 사항 정리 (OI-01~14)
   - `docs/` 승격은 사용자 승인 후 진행
 
+## 2026-10-28 (수)
+
+### 진행 요약
+- 형상관리 시작: GitHub 비공개 저장소 `Rattatto/smart-voca` 생성, `main` 브랜치 연결
+  - GitHub CLI(`gh`) 설치 및 로그인, 커밋 작성자 `Rattatto` (noreply 주소)
+  - `.gitignore` (비밀정보, Android 산출물, 원본 PDF 제외), `.gitattributes` (줄바꿈 LF) 추가
+- 프로젝트 위치 변경: OneDrive 밖 `C:\dev\smart-voca` 로 복사 (원본과 내용 동일 확인)
+  - OneDrive 원본 폴더는 아직 남아 있음 (삭제 여부 사용자 확인 필요)
+  - Claude 메모리는 새 경로에 복사함
+- 단어 데이터 초안 CSV 를 저장소에 추가 (비공개 저장소, 원본 PDF 는 제외). 공개 전 라이선스 확인 필요 (OI-10)
+- CSV 파서 구현 (FR-001~003, 005 일부): `WordCsvParser`, `CsvRecordReader`, `WordItem`
+  - 필수 열 누락 시 중단, 행 오류는 줄 번호와 사유를 남기고 건너뜀, BOM 처리, 같은 `freq_rank` 중복 건너뜀
+  - 단위 테스트 8개 통과 (`./gradlew :app:testDebugUnitTest`)
+- 안드로이드 개발 환경 설치
+  - Android Studio 2026.2.1.8, SDK (platform android-37.1, build-tools 37.0.0), Gradle 9.8.2
+  - 사용자 환경 변수 `ANDROID_HOME` 과 PATH 설정
+- 안드로이드 프로젝트 골격 생성
+  - AGP 9.4.1, Kotlin 2.4.21, Compose BOM 2026.09.00, minSdk 26, target SDK 37.1
+  - 소스는 `src/` 에 둠 (Gradle 소스 경로로 등록)
+  - 디버그 빌드 성공 (`./gradlew :app:assembleDebug`), 시작 화면 `MainActivity` 추가
+- 예문과 품사 생성 방식 결정 (ADR-010): 기기 내장 AI 는 쓰지 않고, 사전 생성한 데이터를 CSV 로 적용
+  - ADR-006 (기기 내장 LLM 보류) 는 2차 검토로 유지
+- 기기 상태: 보유 중이지만 유선 연결 전이라 실기기 설치와 디버깅은 보류
+
+### 결정 사항
+| 항목 | 결정 | 근거 |
+|------|------|------|
+| 저장소 | 비공개 (`Rattatto/smart-voca`) | 사용자 요청. 라이선스 미확인 데이터 포함 |
+| 프로젝트 위치 | `C:\dev\smart-voca` | OneDrive 동기화와 `.git` 충돌 방지 |
+| 예문·품사 | 사전 생성 후 CSV 적용 (ADR-010) | 기기 AI 의 지원 기기와 품질이 불확실 |
+| 소스 경로 | 루트 `src/` 사용 (Gradle 에서 등록) | CLAUDE.md 작업 공간 구조 준수 |
+| 중복 순위 | 같은 `freq_rank` 는 뒤의 행을 건너뜀 | 명세의 "갱신" 규칙 대신 안전한 기본값 (사용자 확인 필요) |
+
+### 남은 항목
+- 커밋과 푸시 후 GitHub Issues 에 미개발 항목 등록
+- 기능 구현: Room 저장, 일일 단어, 재노출, 시험, 설정 화면 (Issues 참고)
+- 예문과 품사 사전 생성 범위와 검수 방법 결정
+- 기기 USB 연결 후 설치와 실기기 테스트
+- OneDrive 원본 폴더 삭제 여부
+- OI-02 승인자, OI-10 라이선스, OI-14 별점 기호 의미
+
 ---
 
 ## 작성 규칙
