@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 2026-10-28 - Smart Voca - 앱 문자열 리소스 (화면 문구는 한국어, NFR-006) -->
+<!-- 파일 위치: app/src/main/res/values/strings.xml -->
+<resources>
+    <string name="app_name">스마트보카</string>
+</resources>
