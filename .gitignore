@@ -1,0 +1,39 @@
+# Smart Voca - Git 제외 목록
+# 생성일: 2026-10-28
+
+# ── 비밀정보 (CLAUDE.md 규칙 5) ──
+.env
+.env.*
+!.env.example
+
+# ── Android / Gradle 빌드 산출물 ──
+*.iml
+.gradle/
+local.properties
+/build/
+/app/build/
+/captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+
+# ── IDE ──
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Claude Code 로컬 설정 ──
+.claude/settings.local.json
+
+# ── 대용량 원본 / 임시 파일 ──
+# 원본 PDF 는 라이선스와 무관하게 저장소에 올리지 않는다 (단어 데이터 CSV 는 추적)
+*.pdf
+*.tmp
+*.log
