@@ -24,6 +24,7 @@ import com.rattatto.smartvoca.data.DailyListRepository
 import com.rattatto.smartvoca.data.SettingsStore
 import com.rattatto.smartvoca.data.WordRepository
 import com.rattatto.smartvoca.data.db.SmartVocaDatabase
+import com.rattatto.smartvoca.domain.FunctionWords
 import com.rattatto.smartvoca.ui.ImportScreen
 import com.rattatto.smartvoca.ui.SettingsScreen
 import com.rattatto.smartvoca.ui.TodayWordScreen
@@ -34,14 +35,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // 앱 전체에서 DB 연결을 하나만 쓰도록 여기서 한 번만 만들고 저장소들이 함께 쓴다
         val database = SmartVocaDatabase.create(applicationContext)
+        val functionWords = loadFunctionWords()
         val wordRepository = WordRepository(database)
-        val dailyListRepository = DailyListRepository(database)
+        val dailyListRepository = DailyListRepository(database, excludedWords = functionWords.words)
         val settingsStore = SettingsStore.create(applicationContext)
         setContent {
             MaterialTheme {
-                StartScreen(wordRepository, dailyListRepository, settingsStore)
+                StartScreen(wordRepository, dailyListRepository, settingsStore, functionWords)
             }
         }
+    }
+
+    /** 기능어 목록은 앱에 들어 있는 파일이라 시작할 때 한 번 읽는다. */
+    private fun loadFunctionWords(): FunctionWords {
+        val csvText = assets.open(FunctionWords.ASSET_FILE_NAME).bufferedReader(Charsets.UTF_8).use { it.readText() }
+        return FunctionWords.parse(csvText)
     }
 }
 
@@ -50,6 +58,7 @@ fun StartScreen(
     wordRepository: WordRepository,
     dailyListRepository: DailyListRepository,
     settingsStore: SettingsStore,
+    functionWords: FunctionWords,
 ) {
     var showSettings by remember { mutableStateOf(false) }
 
@@ -68,7 +77,7 @@ fun StartScreen(
                     Text(text = "설정")
                 }
                 ImportScreen(wordRepository)
-                TodayWordScreen(dailyListRepository, settingsStore, modifier = Modifier.weight(1f))
+                TodayWordScreen(dailyListRepository, settingsStore, functionWords, modifier = Modifier.weight(1f))
             }
         }
     }

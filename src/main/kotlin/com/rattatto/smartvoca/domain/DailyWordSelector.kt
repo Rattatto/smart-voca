@@ -15,11 +15,18 @@ object DailyWordSelector {
 
     /**
      * [levelFilter] 가 null 이면 전체 난이도에서 고른다 (FR-041 "전체").
+     * [excludedWords] 는 소문자 기능어 집합이다. 이 단어는 목록에서 빼고 TIP 으로 보낸다.
      * 후보가 [dailyCount] 보다 적으면 있는 만큼만 돌려준다.
      */
-    fun select(words: List<WordEntity>, dailyCount: Int, levelFilter: Level?): List<WordEntity> {
+    fun select(
+        words: List<WordEntity>,
+        dailyCount: Int,
+        levelFilter: Level?,
+        excludedWords: Set<String> = emptySet(),
+    ): List<WordEntity> {
         require(dailyCount > 0) { "dailyCount 는 1 이상이어야 한다: $dailyCount" }
         return words
+            .filter { it.word.lowercase() !in excludedWords }
             .filter { levelFilter == null || it.level == levelFilter.csvValue }
             .sortedBy { it.freqRank }
             .take(dailyCount)

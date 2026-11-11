@@ -56,6 +56,19 @@ class DailyWordSelectorTest {
     }
 
     @Test
+    fun `기능어는 목록에서 빼고 나머지를 고른다`() {
+        val words = listOf(
+            WordEntity(1, "the", null, "그", null, null, 1, "basic", null),
+            WordEntity(2, "Go", null, "가다", null, null, 2, "basic", null),
+            WordEntity(3, "take", null, "가지다", null, null, 3, "basic", null),
+        )
+
+        val selected = DailyWordSelector.select(words, dailyCount = 10, levelFilter = null, excludedWords = setOf("the"))
+
+        assertEquals(listOf("Go", "take"), selected.map { it.word })
+    }
+
+    @Test
     fun `같은 입력이면 같은 결과를 낸다`() {
         val words = (1..50).map { word(it, Level.values()[it % 3]) }
 

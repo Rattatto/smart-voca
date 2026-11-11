@@ -14,7 +14,11 @@ import kotlinx.coroutines.withContext
 import java.time.Instant
 import java.time.LocalDate
 
-class DailyListRepository(private val database: SmartVocaDatabase) {
+/** [excludedWords] 는 소문자 기능어 집합이다. 일일 목록에 들어가지 않는다. */
+class DailyListRepository(
+    private val database: SmartVocaDatabase,
+    private val excludedWords: Set<String> = emptySet(),
+) {
 
     private val dailyDao = database.dailyWordDao()
     private val wordDao = database.wordDao()
@@ -36,7 +40,7 @@ class DailyListRepository(private val database: SmartVocaDatabase) {
             val saved = dailyDao.findWordsByDate(dateText)
             if (saved.isNotEmpty()) return@withTransaction saved
 
-            val selected = DailyWordSelector.select(wordDao.findAllOrdered(), dailyCount, levelFilter)
+            val selected = DailyWordSelector.select(wordDao.findAllOrdered(), dailyCount, levelFilter, excludedWords)
             if (selected.isEmpty()) return@withTransaction selected
 
             val rows = selected.mapIndexed { index, word ->
