@@ -115,6 +115,44 @@
 - OneDrive 원본 폴더 삭제 여부
 - OI-02 승인자, OI-10 라이선스, OI-14 별점 기호 의미
 
+## 2026-11-04 (수)
+
+### 진행 요약
+- 원격 저장소 연결: `origin` → `https://github.com/Rattatto/smart-voca.git`
+  - 원격 `main` 에 커밋 6개 (골격, CSV 파서, ADR-010, CSV 가져오기 저장) 확인
+  - 커밋, 푸시는 하지 않음 (원격에 이미 반영되어 있음)
+- 이 날 OneDrive 원본 폴더(`C:\Users\<user>\OneDrive\문서\dev\smart-voca`)를 원격 `main` 기준으로 맞춤
+  - 기존 미추적 파일은 `smart-voca-backup-261104` 폴더에 백업해 둠 (삭제 여부 확인 필요)
+  - 작업 폴더는 `C:\dev\smart-voca` 이므로 OneDrive 쪽은 참고용으로만 둠
+- 단어 초안 CSV (`words_draft.csv`) 는 사용자 결정으로 그대로 둠
+  - 원격 추적 상태이고 `.gitignore` 제외 규칙과 맞지 않음. 공개 전 OI-10 확인 필요
+- 이슈 #1 (CSV 가져오기 저장) 빌드 검증
+  - 영문 경로 `C:\dev\projects\smart-voca-verify` 에 원격 클론 후 실행. OneDrive 경로(한글)는 Android 빌드 실패
+  - 단위 테스트 12개 통과 (`--no-build-cache` 로 재실행해 실제 실행 확인)
+  - 디버그 APK 빌드 성공
+- 에뮬레이터 검증 시도 (미완료)
+  - Android Emulator 와 시스템 이미지 `android-37.0 google_apis x86_64` 설치
+  - AVD `sv_api37` (Pixel 2 프로필) 생성
+  - 첫 부팅: GPU 컨텍스트 오류 반복으로 멈춤 → `-gpu swiftshader_indirect` 로 재부팅하니 부팅 완료
+  - 이후 `system_server` 재시작이 반복되고 mount, activity, package 서비스가 늦게 올라와 APK 설치와 실행 실패
+  - 콜드 부팅 (`-wipe-data`) 재시도 중 사용자 요청으로 중지
+
+### 결정 사항
+| 항목 | 결정 | 근거 |
+|------|------|------|
+| 단어 초안 CSV | 원격에 그대로 둠 | 사용자 확인. 이력 재작성은 되돌리기 어려우므로 보류 |
+| 검증 위치 | 영문 경로 클론에서 빌드 | OneDrive 한글 경로에서 Android 빌드 불가 |
+
+### 미확인 항목 (이슈 #1 완료 기준)
+- 앱 실행과 가져오기 화면 동작 (FR-001, FR-003)
+- 앱 재실행 후 데이터 유지 (NFR-002)
+- 2,000개 기준 30초 이내 완료 (NFR-003)
+
+### 남은 항목
+- 에뮬레이터 안정화 후 APK 설치와 실행 검증, 또는 USB 연결 실기기로 대체
+- OneDrive 원본과 백업 폴더 정리 여부 결정
+- 이슈 #1 종료 여부 결정 (기기 검증 후)
+
 ---
 
 ## 작성 규칙
