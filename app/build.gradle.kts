@@ -41,6 +41,8 @@ android {
     sourceSets {
         getByName("main") {
             kotlin.directories.add("../src/main/kotlin")
+            // 기능어 목록 등 앱에 들어가는 파일도 루트 src/ 에 둔다
+            assets.directories.add("../src/main/assets")
         }
         getByName("test") {
             kotlin.directories.add("../src/test/kotlin")
