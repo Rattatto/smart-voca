@@ -1,4 +1,4 @@
-// 2026-11-11 - Smart Voca - 오늘의 일일 단어 목록 화면 (FR-010, FR-013). 설정 연결은 #5
+// 2026-11-11 - Smart Voca - 오늘의 일일 단어 목록 화면 (FR-010, FR-013). 설정 값은 목록을 만들 때 읽는다
 // 파일 위치: src/main/kotlin/com/rattatto/smartvoca/ui/TodayWordScreen.kt
 
 package com.rattatto.smartvoca.ui
@@ -18,23 +18,29 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rattatto.smartvoca.data.DailyListRepository
+import com.rattatto.smartvoca.data.SettingsStore
 import com.rattatto.smartvoca.data.db.WordEntity
-import com.rattatto.smartvoca.domain.DailyWordSelector
+import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 
 /**
- * 오늘의 일일 단어 목록을 보여 준다. 목록이 없으면 만들고, 있으면 저장된 목록을 그대로 쓴다.
- * 개수와 난이도는 설정 기능(#5) 전까지 기본값을 쓴다 (개수 10, 난이도 전체).
+ * 오늘의 일일 단어 목록을 보여 준다. 목록이 없으면 현재 설정으로 만들고, 있으면 저장된 목록을 그대로 쓴다.
+ * 설정을 바꿔도 이미 만들어진 오늘의 목록은 바뀌지 않는다 (FR-045).
  */
 @Composable
-fun TodayWordScreen(repository: DailyListRepository, modifier: Modifier = Modifier) {
+fun TodayWordScreen(
+    repository: DailyListRepository,
+    settingsStore: SettingsStore,
+    modifier: Modifier = Modifier,
+) {
     val today = remember { LocalDate.now() }
     var words by remember { mutableStateOf<List<WordEntity>?>(null) }
     var errorText by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(today) {
         try {
-            words = repository.getOrCreate(today, DailyWordSelector.DEFAULT_DAILY_COUNT, levelFilter = null)
+            val current = settingsStore.settings.first()
+            words = repository.getOrCreate(today, current.dailyCount, current.levelFilter)
         } catch (error: IllegalStateException) {
             errorText = "목록을 만들지 못했습니다: ${error.message}"
         }

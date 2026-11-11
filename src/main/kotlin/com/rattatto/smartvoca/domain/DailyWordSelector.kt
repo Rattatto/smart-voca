@@ -13,8 +13,6 @@ import com.rattatto.smartvoca.data.db.WordEntity
  */
 object DailyWordSelector {
 
-    const val DEFAULT_DAILY_COUNT = 10
-
     /**
      * [levelFilter] 가 null 이면 전체 난이도에서 고른다 (FR-041 "전체").
      * 후보가 [dailyCount] 보다 적으면 있는 만큼만 돌려준다.

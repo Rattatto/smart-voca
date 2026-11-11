@@ -61,6 +61,9 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
+    // DataStore: 설정 값 저장 (ADR-003, FR-044)
+    implementation(libs.androidx.datastore.preferences)
+
     testImplementation(libs.kotlin.test.junit)
     // JVM 에서 Room 을 돌리기 위한 Robolectric (실기기 없이 DAO 테스트)
     testImplementation(libs.robolectric)
