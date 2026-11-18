@@ -47,10 +47,10 @@ fun ExamScreen(
     dailyListRepository: DailyListRepository,
     examRepository: ExamRepository,
     settingsStore: SettingsStore,
+    today: LocalDate,
     onClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val today = remember { LocalDate.now() }
     val scope = rememberCoroutineScope()
     var questions by remember { mutableStateOf<List<ExamQuestion>?>(null) }
     var index by remember { mutableIntStateOf(0) }

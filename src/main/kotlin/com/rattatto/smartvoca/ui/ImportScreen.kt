@@ -1,4 +1,4 @@
-// 2026-10-28 - Smart Voca - CSV 가져오기 화면 (파일 선택, 저장, 결과와 건너뛴 행 표시) (FR-001~003)
+// 2026-10-28 - Smart Voca - CSV 가져오기 (파일 선택, 저장, 결과와 건너뛴 행 표시). 2026-11-18 부터 설정 화면 안에 놓임 (FR-001~003)
 // 파일 위치: src/main/kotlin/com/rattatto/smartvoca/ui/ImportScreen.kt
 
 package com.rattatto.smartvoca.ui

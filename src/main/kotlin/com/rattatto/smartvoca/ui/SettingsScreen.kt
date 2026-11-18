@@ -22,15 +22,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.rattatto.smartvoca.data.AppSettings
 import com.rattatto.smartvoca.data.SettingsStore
+import com.rattatto.smartvoca.data.WordRepository
 import com.rattatto.smartvoca.data.csv.Level
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
  * 설정을 바꾸면 바로 저장된다. 이미 만들어진 오늘의 목록은 바뀌지 않고, 다음 날 목록부터 반영된다 (FR-045).
+ * 단어 CSV 가져오기도 여기서 한다. 가져오기가 성공하면 [onImported] 가 호출된다.
  */
 @Composable
-fun SettingsScreen(settingsStore: SettingsStore, onClose: () -> Unit, modifier: Modifier = Modifier) {
+fun SettingsScreen(
+    settingsStore: SettingsStore,
+    wordRepository: WordRepository,
+    onImported: () -> Unit,
+    onClose: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val settings by settingsStore.settings.collectAsState(initial = AppSettings.DEFAULT)
     val scope = rememberCoroutineScope()
 
@@ -80,6 +88,9 @@ fun SettingsScreen(settingsStore: SettingsStore, onClose: () -> Unit, modifier: 
             valueRange = 5f..20f,
             steps = 14,
         )
+
+        Text(text = "단어 가져오기")
+        ImportScreen(wordRepository, onImported = onImported)
 
         Button(onClick = onClose) {
             Text(text = "닫기")
