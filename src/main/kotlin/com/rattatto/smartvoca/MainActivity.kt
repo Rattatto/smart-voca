@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -21,11 +22,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.rattatto.smartvoca.data.DailyListRepository
+import com.rattatto.smartvoca.data.ExamRepository
 import com.rattatto.smartvoca.data.SettingsStore
 import com.rattatto.smartvoca.data.StudyRepository
 import com.rattatto.smartvoca.data.WordRepository
 import com.rattatto.smartvoca.data.db.SmartVocaDatabase
 import com.rattatto.smartvoca.domain.FunctionWords
+import com.rattatto.smartvoca.ui.ExamScreen
 import com.rattatto.smartvoca.ui.ImportScreen
 import com.rattatto.smartvoca.ui.SettingsScreen
 import com.rattatto.smartvoca.ui.TodayWordScreen
@@ -40,10 +43,18 @@ class MainActivity : ComponentActivity() {
         val wordRepository = WordRepository(database)
         val dailyListRepository = DailyListRepository(database, excludedWords = functionWords.words)
         val studyRepository = StudyRepository(database)
+        val examRepository = ExamRepository(database)
         val settingsStore = SettingsStore.create(applicationContext)
         setContent {
             MaterialTheme {
-                StartScreen(wordRepository, dailyListRepository, studyRepository, settingsStore, functionWords)
+                StartScreen(
+                    wordRepository,
+                    dailyListRepository,
+                    studyRepository,
+                    examRepository,
+                    settingsStore,
+                    functionWords,
+                )
             }
         }
     }
@@ -60,16 +71,26 @@ fun StartScreen(
     wordRepository: WordRepository,
     dailyListRepository: DailyListRepository,
     studyRepository: StudyRepository,
+    examRepository: ExamRepository,
     settingsStore: SettingsStore,
     functionWords: FunctionWords,
 ) {
     var showSettings by remember { mutableStateOf(false) }
+    var showExam by remember { mutableStateOf(false) }
     // 가져오기가 성공할 때마다 올라가서 오늘 목록 화면을 다시 읽게 한다
     var importCount by remember { mutableStateOf(0) }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (showSettings) {
             SettingsScreen(settingsStore, onClose = { showSettings = false }, modifier = Modifier.fillMaxSize())
+        } else if (showExam) {
+            ExamScreen(
+                dailyListRepository = dailyListRepository,
+                examRepository = examRepository,
+                settingsStore = settingsStore,
+                onClose = { showExam = false },
+                modifier = Modifier.fillMaxSize(),
+            )
         } else {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -78,8 +99,13 @@ fun StartScreen(
             ) {
                 Text(text = "스마트보카")
                 Text(text = "동사만 알아도 대박이다")
-                Button(onClick = { showSettings = true }) {
-                    Text(text = "설정")
+                Row {
+                    Button(onClick = { showSettings = true }) {
+                        Text(text = "설정")
+                    }
+                    Button(onClick = { showExam = true }) {
+                        Text(text = "시험 시작")
+                    }
                 }
                 ImportScreen(wordRepository, onImported = { importCount++ })
                 TodayWordScreen(

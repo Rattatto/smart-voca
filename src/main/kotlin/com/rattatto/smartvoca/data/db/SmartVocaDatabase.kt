@@ -65,9 +65,36 @@ val MIGRATION_2_3: Migration = object : Migration(2, 3) {
     }
 }
 
+/**
+ * v3 → v4: 시험 이력 `exam_attempt` 추가 (2026-11-18, #4). SQL 은 [ExamAttemptEntity] 정의와 같아야 한다.
+ */
+val MIGRATION_3_4: Migration = object : Migration(3, 4) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `exam_attempt` (" +
+                "`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                "`word_id` INTEGER NOT NULL, " +
+                "`attempt_date` TEXT NOT NULL, " +
+                "`attempted_at` TEXT NOT NULL, " +
+                "`shown_meaning` TEXT NOT NULL, " +
+                "`user_input` TEXT NOT NULL, " +
+                "`is_correct` INTEGER NOT NULL, " +
+                "FOREIGN KEY(`word_id`) REFERENCES `word`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION" +
+                ")",
+        )
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_exam_attempt_word_id` ON `exam_attempt` (`word_id`)")
+    }
+}
+
 @Database(
-    entities = [WordEntity::class, DailyWordEntity::class, StudyRecordEntity::class, ReviewScheduleEntity::class],
-    version = 3,
+    entities = [
+        WordEntity::class,
+        DailyWordEntity::class,
+        StudyRecordEntity::class,
+        ReviewScheduleEntity::class,
+        ExamAttemptEntity::class,
+    ],
+    version = 4,
     // 스키마 파일은 1차에서 만들지 않는다. 마이그레이션은 MIGRATION_*_* 로 직접 정의한다
     exportSchema = false,
 )
@@ -81,6 +108,8 @@ abstract class SmartVocaDatabase : RoomDatabase() {
 
     abstract fun reviewDao(): ReviewDao
 
+    abstract fun examDao(): ExamDao
+
     companion object {
         private const val DATABASE_FILE_NAME = "smart_voca.db"
 
@@ -89,6 +118,6 @@ abstract class SmartVocaDatabase : RoomDatabase() {
                 context.applicationContext,
                 SmartVocaDatabase::class.java,
                 DATABASE_FILE_NAME,
-            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3).build()
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
     }
 }

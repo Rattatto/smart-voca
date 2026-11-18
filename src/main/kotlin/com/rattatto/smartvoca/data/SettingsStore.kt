@@ -19,12 +19,14 @@ data class AppSettings(
     val dailyCount: Int,
     val levelFilter: Level?,
     val verbRatio: Int,
+    val examSize: Int = SettingsStore.DEFAULT_EXAM_SIZE,
 ) {
     companion object {
         val DEFAULT = AppSettings(
             dailyCount = SettingsStore.DEFAULT_DAILY_COUNT,
             levelFilter = null,
             verbRatio = SettingsStore.DEFAULT_VERB_RATIO,
+            examSize = SettingsStore.DEFAULT_EXAM_SIZE,
         )
     }
 }
@@ -44,7 +46,16 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
             verbRatio = prefs[KEY_VERB_RATIO]
                 ?.takeIf { it in VERB_RATIO_VALUES }
                 ?: DEFAULT_VERB_RATIO,
+            examSize = prefs[KEY_EXAM_SIZE]
+                ?.takeIf { it in EXAM_SIZE_RANGE }
+                ?: DEFAULT_EXAM_SIZE,
         )
+    }
+
+    /** 시험 한 회차의 문제 수. 5~20, 1 단위 (FR-043). */
+    suspend fun saveExamSize(value: Int) {
+        require(value in EXAM_SIZE_RANGE) { "시험 문제 수는 5~20 이어야 한다: $value" }
+        dataStore.edit { it[KEY_EXAM_SIZE] = value }
     }
 
     /** 일일 노출 개수. 5~30, 1 단위 (FR-040). */
@@ -72,11 +83,14 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
         const val DEFAULT_DAILY_COUNT = 10
         val VERB_RATIO_VALUES = listOf(30, 40, 50, 60, 70, 80, 90)
         const val DEFAULT_VERB_RATIO = 60
+        val EXAM_SIZE_RANGE = 5..20
+        const val DEFAULT_EXAM_SIZE = 10
 
         private const val LEVEL_FILTER_ALL = "all"
         private val KEY_DAILY_COUNT = intPreferencesKey("daily_count")
         private val KEY_LEVEL_FILTER = stringPreferencesKey("level_filter")
         private val KEY_VERB_RATIO = intPreferencesKey("verb_ratio")
+        private val KEY_EXAM_SIZE = intPreferencesKey("exam_size")
 
         private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 

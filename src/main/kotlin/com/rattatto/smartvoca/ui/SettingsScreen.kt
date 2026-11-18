@@ -73,6 +73,14 @@ fun SettingsScreen(settingsStore: SettingsStore, onClose: () -> Unit, modifier: 
         )
         Text(text = "동사 비중은 저장만 되며, 품사 데이터가 준비되면 목록에 적용된다.")
 
+        Text(text = "시험 문제 수: ${settings.examSize}문제")
+        Slider(
+            value = settings.examSize.toFloat(),
+            onValueChange = { scope.launch { settingsStore.saveExamSize(it.roundToInt()) } },
+            valueRange = 5f..20f,
+            steps = 14,
+        )
+
         Button(onClick = onClose) {
             Text(text = "닫기")
         }

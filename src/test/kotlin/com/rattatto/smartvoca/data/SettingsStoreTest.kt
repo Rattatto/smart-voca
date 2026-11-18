@@ -73,6 +73,17 @@ class SettingsStoreTest {
     }
 
     @Test
+    fun `시험 문제 수는 5에서 20 사이만 받고 기본값은 10이다`() = runBlocking {
+        val store = storeWith()
+
+        assertEquals(10, store.settings.first().examSize)
+        assertFailsWith<IllegalArgumentException> { store.saveExamSize(4) }
+        assertFailsWith<IllegalArgumentException> { store.saveExamSize(21) }
+        store.saveExamSize(20)
+        assertEquals(20, store.settings.first().examSize)
+    }
+
+    @Test
     fun `저장된 값이 범위를 벗어나면 기본값으로 읽는다`() = runBlocking {
         // 범위 검사를 거치지 않은 값이 들어 있는 경우를 가정한다
         val store = storeWith(initial = mutablePreferencesOf(intPreferencesKey("daily_count") to 99))
