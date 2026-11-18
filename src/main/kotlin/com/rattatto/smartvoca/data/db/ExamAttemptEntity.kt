@@ -36,4 +36,6 @@ data class ExamAttemptEntity(
     @ColumnInfo(name = "user_input") val userInput: String,
     /** 채점 결과. 정답 1, 오답 0 */
     @ColumnInfo(name = "is_correct") val isCorrect: Int,
+    /** 문제 형식. `mc` (객관식) 또는 `typed` (주관식). 기존 이력은 주관식이다 */
+    @ColumnInfo(name = "question_type", defaultValue = "'typed'") val questionType: String = "typed",
 )

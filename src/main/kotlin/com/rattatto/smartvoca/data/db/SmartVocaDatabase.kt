@@ -86,6 +86,27 @@ val MIGRATION_3_4: Migration = object : Migration(3, 4) {
     }
 }
 
+/**
+ * v4 → v5: 단어별 시험 단계 `word_stage` 추가, `exam_attempt.question_type` 추가 (2026-11-18, ADR-012).
+ * 기존 시험 이력은 주관식으로 본다.
+ */
+val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE IF NOT EXISTS `word_stage` (" +
+                "`word_id` INTEGER NOT NULL, " +
+                "`type` TEXT NOT NULL, " +
+                "`streak_days` INTEGER NOT NULL, " +
+                "`last_counted_date` TEXT, " +
+                "`promoted_at` TEXT, " +
+                "PRIMARY KEY(`word_id`), " +
+                "FOREIGN KEY(`word_id`) REFERENCES `word`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION" +
+                ")",
+        )
+        db.execSQL("ALTER TABLE `exam_attempt` ADD COLUMN `question_type` TEXT NOT NULL DEFAULT 'typed'")
+    }
+}
+
 @Database(
     entities = [
         WordEntity::class,
@@ -93,8 +114,9 @@ val MIGRATION_3_4: Migration = object : Migration(3, 4) {
         StudyRecordEntity::class,
         ReviewScheduleEntity::class,
         ExamAttemptEntity::class,
+        WordStageEntity::class,
     ],
-    version = 4,
+    version = 5,
     // 스키마 파일은 1차에서 만들지 않는다. 마이그레이션은 MIGRATION_*_* 로 직접 정의한다
     exportSchema = false,
 )
@@ -110,6 +132,8 @@ abstract class SmartVocaDatabase : RoomDatabase() {
 
     abstract fun examDao(): ExamDao
 
+    abstract fun stageDao(): StageDao
+
     companion object {
         private const val DATABASE_FILE_NAME = "smart_voca.db"
 
@@ -118,6 +142,6 @@ abstract class SmartVocaDatabase : RoomDatabase() {
                 context.applicationContext,
                 SmartVocaDatabase::class.java,
                 DATABASE_FILE_NAME,
-            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4).build()
+            ).addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5).build()
     }
 }
