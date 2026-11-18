@@ -39,7 +39,8 @@ private const val MAX_SKIPPED_ROWS_SHOWN = 50
 fun ImportScreen(repository: WordRepository, onImported: () -> Unit = {}, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var statusText by remember { mutableStateOf("아직 가져온 단어가 없습니다.") }
+    // 화면을 열 때마다 저장된 단어가 있어도 결과 문구는 비어 있으므로, 안내 문구로 시작한다
+    var statusText by remember { mutableStateOf("CSV 파일을 고르면 저장 결과가 여기에 표시됩니다.") }
     var summary by remember { mutableStateOf<ImportSummary?>(null) }
 
     val filePicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
