@@ -12,7 +12,9 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.rattatto.smartvoca.data.csv.Level
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import java.time.LocalDate
 
 /** 화면과 선정 규칙이 쓰는 설정 값 묶음. [levelFilter] 가 null 이면 전체 난이도다. */
 data class AppSettings(
@@ -75,6 +77,14 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
         dataStore.edit { it[KEY_VERB_RATIO] = value }
     }
 
+    /** 앱이 마지막으로 본 날짜. 처음 실행이면 null. 날짜 변경 알림에 쓴다. */
+    suspend fun lastSeenDate(): LocalDate? =
+        dataStore.data.first()[KEY_LAST_SEEN_DATE]?.let { runCatching { LocalDate.parse(it) }.getOrNull() }
+
+    suspend fun saveLastSeenDate(date: LocalDate) {
+        dataStore.edit { it[KEY_LAST_SEEN_DATE] = date.toString() }
+    }
+
     private fun parseLevelFilter(stored: String?): Level? =
         if (stored == null || stored == LEVEL_FILTER_ALL) null else Level.fromCsv(stored)
 
@@ -91,6 +101,7 @@ class SettingsStore(private val dataStore: DataStore<Preferences>) {
         private val KEY_LEVEL_FILTER = stringPreferencesKey("level_filter")
         private val KEY_VERB_RATIO = intPreferencesKey("verb_ratio")
         private val KEY_EXAM_SIZE = intPreferencesKey("exam_size")
+        private val KEY_LAST_SEEN_DATE = stringPreferencesKey("last_seen_date")
 
         private val Context.settingsDataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 

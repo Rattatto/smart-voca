@@ -90,6 +90,16 @@ class SettingsStoreTest {
 
         assertEquals(AppSettings.DEFAULT.dailyCount, store.settings.first().dailyCount)
     }
+
+    @Test
+    fun `마지막으로 본 날짜를 저장하고 다시 읽는다 (처음에는 null)`() = runBlocking {
+        val store = storeWith()
+        assertEquals(null, store.lastSeenDate())
+
+        store.saveLastSeenDate(java.time.LocalDate.of(2026, 11, 18))
+
+        assertEquals(java.time.LocalDate.of(2026, 11, 18), store.lastSeenDate())
+    }
 }
 
 /** 테스트용 메모리 DataStore. 변환 규칙은 실제 DataStore 와 같다. */
