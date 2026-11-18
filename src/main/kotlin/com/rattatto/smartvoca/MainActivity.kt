@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.rattatto.smartvoca.data.DailyListRepository
 import com.rattatto.smartvoca.data.SettingsStore
+import com.rattatto.smartvoca.data.StudyRepository
 import com.rattatto.smartvoca.data.WordRepository
 import com.rattatto.smartvoca.data.db.SmartVocaDatabase
 import com.rattatto.smartvoca.domain.FunctionWords
@@ -38,10 +39,11 @@ class MainActivity : ComponentActivity() {
         val functionWords = loadFunctionWords()
         val wordRepository = WordRepository(database)
         val dailyListRepository = DailyListRepository(database, excludedWords = functionWords.words)
+        val studyRepository = StudyRepository(database)
         val settingsStore = SettingsStore.create(applicationContext)
         setContent {
             MaterialTheme {
-                StartScreen(wordRepository, dailyListRepository, settingsStore, functionWords)
+                StartScreen(wordRepository, dailyListRepository, studyRepository, settingsStore, functionWords)
             }
         }
     }
@@ -57,6 +59,7 @@ class MainActivity : ComponentActivity() {
 fun StartScreen(
     wordRepository: WordRepository,
     dailyListRepository: DailyListRepository,
+    studyRepository: StudyRepository,
     settingsStore: SettingsStore,
     functionWords: FunctionWords,
 ) {
@@ -81,6 +84,7 @@ fun StartScreen(
                 ImportScreen(wordRepository, onImported = { importCount++ })
                 TodayWordScreen(
                     dailyListRepository,
+                    studyRepository,
                     settingsStore,
                     functionWords,
                     refreshKey = importCount,

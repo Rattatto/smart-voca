@@ -1,4 +1,4 @@
-// 2026-11-11 - Smart Voca - 일일 단어 선정 규칙 테스트 (FR-010, FR-011)
+// 2026-11-18 - Smart Voca - 일일 목록 구성 규칙 테스트 (재노출 상한, 신규 채우기, 순서) (FR-010, FR-014)
 // 파일 위치: src/test/kotlin/com/rattatto/smartvoca/domain/DailyWordSelectorTest.kt
 
 package com.rattatto.smartvoca.domain
@@ -11,9 +11,9 @@ import kotlin.test.assertFailsWith
 
 class DailyWordSelectorTest {
 
-    private fun word(rank: Int, level: Level) = WordEntity(
+    private fun word(rank: Int, level: Level = Level.BASIC, text: String = "word$rank") = WordEntity(
         id = rank.toLong(),
-        word = "word$rank",
+        word = text,
         pos = null,
         meaningKo = "뜻$rank",
         exampleEn = null,
@@ -24,64 +24,53 @@ class DailyWordSelectorTest {
     )
 
     @Test
-    fun `설정 개수만큼 빈도 순위가 높은 단어부터 고른다`() {
-        val words = (1..30).map { word(it, Level.BASIC) }.shuffled()
+    fun `재노출은 설정 개수의 30 퍼센트까지만 먼저 넣고 나머지는 신규로 채운다`() {
+        val reviews = (1..5).map { word(it) }
+        val news = (101..120).map { word(it) }
 
-        val selected = DailyWordSelector.select(words, dailyCount = 10, levelFilter = null)
+        val picked = DailyWordSelector.compose(dailyCount = 10, reviewCandidates = reviews, newCandidates = news)
 
-        assertEquals((1..10).toList(), selected.map { it.freqRank })
+        assertEquals(3, picked.count { it.source == DailyWordSelector.SOURCE_REVIEW })
+        assertEquals(7, picked.count { it.source == DailyWordSelector.SOURCE_NEW })
+        assertEquals(listOf(1, 2, 3), picked.take(3).map { it.word.freqRank })
     }
 
     @Test
-    fun `난이도 필터를 적용한다`() {
-        val words = listOf(
-            word(1, Level.BASIC),
-            word(2, Level.INTERMEDIATE),
-            word(3, Level.ADVANCED),
-            word(4, Level.INTERMEDIATE),
+    fun `신규 단어가 부족하면 재노출 후보를 상한을 넘겨 채운다`() {
+        val reviews = (1..6).map { word(it) }
+        val news = listOf(word(101), word(102))
+
+        val picked = DailyWordSelector.compose(dailyCount = 10, reviewCandidates = reviews, newCandidates = news)
+
+        // 재노출 후보 6개 전부 들어가고, 신규는 2개뿐이라 목록은 8개가 된다
+        assertEquals(6, picked.count { it.source == DailyWordSelector.SOURCE_REVIEW })
+        assertEquals(2, picked.count { it.source == DailyWordSelector.SOURCE_NEW })
+        assertEquals(8, picked.size)
+    }
+
+    @Test
+    fun `재노출이 먼저 나오고 신규 단어가 뒤에 나온다`() {
+        val picked = DailyWordSelector.compose(
+            dailyCount = 10,
+            reviewCandidates = listOf(word(1)),
+            newCandidates = listOf(word(101), word(102)),
         )
 
-        val selected = DailyWordSelector.select(words, dailyCount = 10, levelFilter = Level.INTERMEDIATE)
-
-        assertEquals(listOf(2, 4), selected.map { it.freqRank })
+        assertEquals(listOf(DailyWordSelector.SOURCE_REVIEW, DailyWordSelector.SOURCE_NEW, DailyWordSelector.SOURCE_NEW),
+            picked.map { it.source })
     }
 
     @Test
-    fun `후보가 개수보다 적으면 있는 만큼만 돌려준다`() {
-        val words = listOf(word(1, Level.BASIC), word(2, Level.BASIC))
+    fun `후보가 모두 부족하면 있는 만큼만 돌려준다`() {
+        val picked = DailyWordSelector.compose(dailyCount = 10, reviewCandidates = emptyList(), newCandidates = listOf(word(1)))
 
-        val selected = DailyWordSelector.select(words, dailyCount = 10, levelFilter = null)
-
-        assertEquals(listOf(1, 2), selected.map { it.freqRank })
-    }
-
-    @Test
-    fun `기능어는 목록에서 빼고 나머지를 고른다`() {
-        val words = listOf(
-            WordEntity(1, "the", null, "그", null, null, 1, "basic", null),
-            WordEntity(2, "Go", null, "가다", null, null, 2, "basic", null),
-            WordEntity(3, "take", null, "가지다", null, null, 3, "basic", null),
-        )
-
-        val selected = DailyWordSelector.select(words, dailyCount = 10, levelFilter = null, excludedWords = setOf("the"))
-
-        assertEquals(listOf("Go", "take"), selected.map { it.word })
-    }
-
-    @Test
-    fun `같은 입력이면 같은 결과를 낸다`() {
-        val words = (1..50).map { word(it, Level.values()[it % 3]) }
-
-        val first = DailyWordSelector.select(words, dailyCount = 10, levelFilter = Level.BASIC)
-        val second = DailyWordSelector.select(words.reversed(), dailyCount = 10, levelFilter = Level.BASIC)
-
-        assertEquals(first, second)
+        assertEquals(1, picked.size)
     }
 
     @Test
     fun `개수가 1 미만이면 예외를 던진다`() {
         assertFailsWith<IllegalArgumentException> {
-            DailyWordSelector.select(emptyList(), dailyCount = 0, levelFilter = null)
+            DailyWordSelector.compose(dailyCount = 0, reviewCandidates = emptyList(), newCandidates = emptyList())
         }
     }
 }

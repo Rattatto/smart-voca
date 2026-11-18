@@ -26,4 +26,7 @@ interface WordDao {
 
     @Query("SELECT * FROM word ORDER BY freq_rank")
     suspend fun findAllOrdered(): List<WordEntity>
+
+    @Query("SELECT * FROM word WHERE id IN (:ids)")
+    suspend fun findByIds(ids: List<Long>): List<WordEntity>
 }
