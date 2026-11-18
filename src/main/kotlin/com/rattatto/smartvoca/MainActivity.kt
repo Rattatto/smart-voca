@@ -61,6 +61,8 @@ fun StartScreen(
     functionWords: FunctionWords,
 ) {
     var showSettings by remember { mutableStateOf(false) }
+    // 가져오기가 성공할 때마다 올라가서 오늘 목록 화면을 다시 읽게 한다
+    var importCount by remember { mutableStateOf(0) }
 
     Surface(modifier = Modifier.fillMaxSize()) {
         if (showSettings) {
@@ -76,8 +78,14 @@ fun StartScreen(
                 Button(onClick = { showSettings = true }) {
                     Text(text = "설정")
                 }
-                ImportScreen(wordRepository)
-                TodayWordScreen(dailyListRepository, settingsStore, functionWords, modifier = Modifier.weight(1f))
+                ImportScreen(wordRepository, onImported = { importCount++ })
+                TodayWordScreen(
+                    dailyListRepository,
+                    settingsStore,
+                    functionWords,
+                    refreshKey = importCount,
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }

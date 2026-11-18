@@ -37,13 +37,15 @@ fun TodayWordScreen(
     repository: DailyListRepository,
     settingsStore: SettingsStore,
     functionWords: FunctionWords,
+    refreshKey: Int = 0,
     modifier: Modifier = Modifier,
 ) {
     val today = remember { LocalDate.now() }
     var words by remember { mutableStateOf<List<WordEntity>?>(null) }
     var errorText by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(today) {
+    // refreshKey 가 바뀌면 (가져오기 성공 등) 목록을 다시 읽는다. 오늘 목록이 이미 있으면 그대로 쓴다
+    LaunchedEffect(today, refreshKey) {
         try {
             val current = settingsStore.settings.first()
             words = repository.getOrCreate(today, current.dailyCount, current.levelFilter)

@@ -34,8 +34,9 @@ private val CSV_MIME_TYPES = arrayOf("text/csv", "text/comma-separated-values", 
 
 private const val MAX_SKIPPED_ROWS_SHOWN = 50
 
+/** [onImported] 는 저장이 성공했을 때 한 번 호출된다. 오늘 목록 화면을 다시 읽히는 데 쓴다. */
 @Composable
-fun ImportScreen(repository: WordRepository, modifier: Modifier = Modifier) {
+fun ImportScreen(repository: WordRepository, onImported: () -> Unit = {}, modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var statusText by remember { mutableStateOf("아직 가져온 단어가 없습니다.") }
@@ -49,6 +50,7 @@ fun ImportScreen(repository: WordRepository, modifier: Modifier = Modifier) {
                 val result = repository.importCsv(csvText)
                 summary = result
                 statusText = "저장 ${result.inserted}개, 갱신 ${result.updated}개, 건너뜀 ${result.skipped.size}개"
+                onImported()
             } catch (error: IllegalArgumentException) {
                 // 필수 열 누락, 헤더 없음, 따옴표 오류 등 파일 형식 문제
                 summary = null
