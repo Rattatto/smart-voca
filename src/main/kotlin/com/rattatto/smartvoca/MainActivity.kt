@@ -31,6 +31,7 @@ import com.rattatto.smartvoca.domain.FunctionWords
 import com.rattatto.smartvoca.ui.ExamScreen
 import com.rattatto.smartvoca.ui.ImportScreen
 import com.rattatto.smartvoca.ui.SettingsScreen
+import com.rattatto.smartvoca.ui.SmartVocaColors
 import com.rattatto.smartvoca.ui.TodayWordScreen
 
 class MainActivity : ComponentActivity() {
@@ -46,7 +47,7 @@ class MainActivity : ComponentActivity() {
         val examRepository = ExamRepository(database)
         val settingsStore = SettingsStore.create(applicationContext)
         setContent {
-            MaterialTheme {
+            MaterialTheme(colorScheme = SmartVocaColors) {
                 StartScreen(
                     wordRepository,
                     dailyListRepository,
