@@ -43,3 +43,6 @@ ai-agent/claude/261118_디자인/
 ai-agent/claude/261118_디자인작업메모.md
 ai-agent/uploads/
 AI기반프로그래밍 수업내용.txt
+
+# 단어 데이터 원본 (출처 PDF 라이선스 미확인, OI-10/RK-01). 로컬에서 가져오기용으로만 쓴다 (261125)
+ai-agent/claude/261021_단어데이터/data/words_draft.csv

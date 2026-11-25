@@ -37,6 +37,15 @@
 - 앱과 웹에 공통으로 들어갈 규칙은 `main` 의 설계 문서에 먼저 적고, 양쪽 코드에 각각 반영한다. 도메인 규칙은 `web/src/domain/*.ts` 와 `android` 의 `src/main/kotlin/.../domain/*.kt` 가 1:1 대응한다.
 - 커밋 전 `git branch --show-current` 로 브랜치를 확인한다. push 는 브랜치를 지정한다 (`git push origin main` / `git push origin android`).
 
+### 잘못된 세션 안내 (필수, 사용자 요청 261125)
+
+이 세션은 **웹·문서 전용(`main`, `C:\dev\smart-voca`)** 이다. 요청이 안드로이드 앱 코드에 관한 것이면 작업하지 말고 먼저 안내한다.
+
+- 해당 요청: Kotlin, Compose, Room, Gradle, APK, 에뮬레이터·기기 설치, `app/`·`src/main/kotlin` 수정, 앱 화면·앱 디자인
+- 안내 문구: "이 요청은 안드로이드 앱 작업이라 `C:\dev\smart-voca-android` 폴더에서 새 Claude Code 세션을 열어 진행해 주세요. 이 세션은 웹과 문서 전용입니다."
+- 예외: 앱과 웹에 공통으로 들어갈 규칙을 **문서로** 정리하는 일은 여기서 한다 (문서는 main 에서만 수정).
+- 웹 요청인지 앱 요청인지 애매하면 추측하지 말고 어느 쪽인지 묻는다.
+
 ## 상위 정책 참조
 
 본 프로젝트는 **`docs/개발방법론.md`** 를 우선 따른다.
