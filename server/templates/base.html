@@ -1,0 +1,36 @@
+<!doctype html>
+<!-- 2026-11-25 - Smart Voca - 공통 틀: 머리말(홈·단어·설정 버튼), 알림 메시지. 주소는 / 로 시작, 속성은 따옴표 (R-04) -->
+<!-- 파일 위치: server/templates/base.html -->
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}스마트보카{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">스마트보카</a>
+    <nav class="nav">
+      <a class="nav-link{% if active == 'words' %} is-active{% endif %}" href="/words">단어</a>
+      <a class="nav-link{% if active == 'settings' %} is-active{% endif %}" href="/settings">설정</a>
+    </nav>
+  </header>
+
+  <main class="page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p class="flash flash-{{ category }}">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+  <script>
+    // data-confirm 이 붙은 폼은 제출 전에 한 번 묻는다 (삭제 등). 문구를 JS 문자열에 넣지 않아 따옴표가 있어도 안전하다
+    document.addEventListener('submit', (event) => {
+      const message = event.target.dataset.confirm
+      if (message && !window.confirm(message)) event.preventDefault()
+    })
+  </script>
+</body>
+</html>

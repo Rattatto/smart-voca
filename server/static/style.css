@@ -1,4 +1,4 @@
-/* 2026-11-25 - Smart Voca - 서버 앱 공통 스타일 (1주차 뼈대) */
+/* 2026-11-25 - Smart Voca - 서버 앱 공통 스타일 (머리말, 카드, 폼, 단어 표) */
 /* 파일 위치: server/static/style.css */
 
 :root {
@@ -6,7 +6,9 @@
   --ink: #2b2a28;
   --muted: #6b675f;
   --card: #ffffff;
+  --line: #e4dfd6;
   --accent: #3d6b4f;
+  --danger: #a23b2a;
 }
 
 * { box-sizing: border-box; }
@@ -19,7 +21,27 @@ body {
   line-height: 1.6;
 }
 
-.page { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+/* 머리말 */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--accent);
+}
+.brand { color: #fff; font-weight: 700; font-size: 1.15rem; text-decoration: none; }
+.nav { display: flex; gap: 8px; }
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  padding: 4px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+}
+.nav-link.is-active, .nav-link:hover { background: rgba(255, 255, 255, 0.2); }
+
+.page { max-width: 880px; margin: 0 auto; padding: 24px 20px 48px; }
+h1 { font-size: 1.6rem; margin: 0 0 16px; }
 
 .hero h1 { margin: 0; font-size: 2rem; color: var(--accent); }
 .motto { margin: 4px 0 24px; color: var(--muted); }
@@ -28,7 +50,50 @@ body {
   background: var(--card);
   border-radius: 12px;
   padding: 20px 24px;
+  margin-bottom: 16px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
-.card h2 { margin-top: 0; font-size: 1.2rem; }
-.note { color: var(--muted); font-size: 0.9rem; }
+.card h2 { margin-top: 0; font-size: 1.15rem; }
+.note, .muted { color: var(--muted); font-size: 0.9rem; }
+
+/* 알림 */
+.flash { padding: 10px 14px; border-radius: 8px; margin: 0 0 16px; }
+.flash-ok { background: #e3efe6; color: #24513a; }
+.flash-error { background: #f6e1dc; color: var(--danger); }
+
+/* 버튼 */
+.button {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.button.ghost { background: transparent; color: var(--accent); }
+.button.danger { background: transparent; border-color: var(--danger); color: var(--danger); }
+.button.small { padding: 2px 10px; font-size: 0.85rem; }
+
+/* 폼 */
+input, textarea {
+  font: inherit;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.inline-form { display: flex; flex-wrap: wrap; gap: 8px; }
+.inline-form input { flex: 1 1 180px; }
+.stack-form { display: flex; flex-direction: column; gap: 12px; }
+.stack-form label { display: flex; flex-direction: column; gap: 4px; }
+.row { display: flex; gap: 8px; }
+
+/* 단어 표 */
+.word-table { width: 100%; border-collapse: collapse; }
+.word-table th, .word-table td { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.word-cell { font-weight: 600; white-space: nowrap; }
+.actions { display: flex; gap: 6px; justify-content: flex-end; }
+.actions form { margin: 0; }
+.pager { display: flex; gap: 8px; justify-content: center; margin-top: 16px; }

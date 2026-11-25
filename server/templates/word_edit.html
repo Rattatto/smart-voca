@@ -1,0 +1,19 @@
+{# 2026-11-25 - Smart Voca - 단어 수정 (VOCA-FR-002). 파일 위치: server/templates/word_edit.html #}
+{% extends "base.html" %}
+{% set active = 'words' %}
+{% block title %}단어 수정 - 스마트보카{% endblock %}
+{% block content %}
+  <h1>단어 수정</h1>
+
+  <section class="card">
+    <form class="stack-form" method="post" action="/words/{{ word['id'] }}/edit">
+      <label>영단어 <input name="word" value="{{ word['word'] }}" required maxlength="100"></label>
+      <label>뜻 <textarea name="meaning" required maxlength="300" rows="3">{{ word['meaning'] }}</textarea></label>
+      <p class="note">같은 철자의 뜻이 여럿이면 '; ' 로 구분해 적습니다.</p>
+      <div class="row">
+        <button class="button" type="submit">저장</button>
+        <a class="button ghost" href="/words">취소</a>
+      </div>
+    </form>
+  </section>
+{% endblock %}

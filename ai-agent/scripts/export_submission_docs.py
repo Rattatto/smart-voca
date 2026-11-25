@@ -23,9 +23,10 @@ DOCS_DIR = REPO_ROOT / "docs"
 # (원본 경로, 분류, 제출용 제목, 1차 제출 포함 여부)
 EXPORT_TARGETS = [
     ("ai-agent/claude/update/261021_기획서.md", "기획", "스마트보카 프로젝트 기획서", True),
-    ("ai-agent/claude/update/261021_요구사항명세서.md", "요구", "스마트보카 요구사항 명세서", False),
+    # 요구사항·데이터 설계는 261125 서버 앱 판으로 교체 (261021 판은 안드로이드 기준)
+    ("ai-agent/claude/update/261125_요구사항명세서.md", "요구", "스마트보카 요구사항 명세서", False),
     ("ai-agent/claude/update/261021_아키텍처설계서.md", "설계", "스마트보카 시스템 아키텍처 설계서", False),
-    ("ai-agent/claude/update/261021_데이터설계서.md", "설계", "스마트보카 데이터 설계서", False),
+    ("ai-agent/claude/update/261125_데이터설계서.md", "설계", "스마트보카 데이터 설계서", False),
 ]
 
 VERSION_PATTERN = re.compile(r"^\*\*버전\*\*:\s*v(\d+\.\d+)", re.MULTILINE)

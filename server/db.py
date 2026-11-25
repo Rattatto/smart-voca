@@ -13,15 +13,24 @@ from pathlib import Path
 # 개발 PC 에서는 환경변수가 없으므로 server/data/voca.db 를 쓴다 (커밋하지 않음).
 DEFAULT_DB_PATH = Path(__file__).resolve().parent / "data" / "voca.db"
 
-# 1주차 뼈대 스키마. 이후 데이터 설계서에 맞춰 늘린다.
-# CREATE TABLE IF NOT EXISTS 라서 재시작해도 기존 데이터를 지우지 않는다.
-SCHEMA = """
+# 스키마 버전 (PRAGMA user_version). 테이블을 바꿀 때는 숫자를 올리고
+# MIGRATIONS 에 "이전 버전 → 새 버전" 단계를 추가한다. 상세: 261125_데이터설계서.md
+SCHEMA_VERSION = 1
+
+SCHEMA_V1 = """
 CREATE TABLE IF NOT EXISTS words (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    word TEXT NOT NULL UNIQUE,
+    word TEXT NOT NULL UNIQUE COLLATE NOCASE,
     meaning TEXT NOT NULL,
-    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+    freq_rank INTEGER,
+    level TEXT CHECK (level IN ('basic', 'intermediate', 'advanced')),
+    pos TEXT,
+    example_en TEXT,
+    example_ko TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+    updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
 );
+CREATE INDEX IF NOT EXISTS idx_words_freq_rank ON words (freq_rank);
 CREATE TABLE IF NOT EXISTS study_records (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     word_id INTEGER NOT NULL REFERENCES words(id) ON DELETE CASCADE,
@@ -37,7 +46,14 @@ CREATE TABLE IF NOT EXISTS exam_answers (
     is_correct INTEGER NOT NULL,
     answered_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
 );
+CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL
+);
 """
+
+# 버전 0(빈 DB) → 1. 이후 버전이 생기면 {1: "ALTER TABLE ..."} 처럼 이어 붙인다
+MIGRATIONS = {0: SCHEMA_V1}
 
 
 def resolve_db_path() -> Path:
@@ -66,7 +82,24 @@ def connect(db_path: Path) -> Iterator[sqlite3.Connection]:
 
 
 def init_db(db_path: Path) -> None:
-    """DB 파일이 없으면 만들고 테이블을 준비한다. 여러 번 불러도 안전하다."""
+    """DB 파일이 없으면 만들고, 스키마를 최신 버전까지 올린다. 여러 번 불러도 안전하다."""
     db_path.parent.mkdir(parents=True, exist_ok=True)
     with connect(db_path) as connection:
-        connection.executescript(SCHEMA)
+        version = connection.execute("PRAGMA user_version").fetchone()[0]
+        while version < SCHEMA_VERSION:
+            connection.executescript(MIGRATIONS[version])
+            version += 1
+            # PRAGMA 는 ? 자리표시자를 받지 않는다. 값은 코드 안의 정수라 안전하다
+            connection.execute(f"PRAGMA user_version = {version}")
+
+
+def get_setting(connection: sqlite3.Connection, key: str) -> str | None:
+    row = connection.execute("SELECT value FROM settings WHERE key = ?", (key,)).fetchone()
+    return row["value"] if row else None
+
+
+def set_setting(connection: sqlite3.Connection, key: str, value: str) -> None:
+    connection.execute(
+        "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+        (key, value),
+    )

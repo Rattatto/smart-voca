@@ -1,0 +1,50 @@
+{# 2026-11-25 - Smart Voca - 설정: CSV 가져오기 (VOCA-FR-003). 학습량·시험 기본값은 VOCA-FR-061 에서 추가 #}
+{# 파일 위치: server/templates/settings.html #}
+{% extends "base.html" %}
+{% set active = 'settings' %}
+{% block title %}설정 - 스마트보카{% endblock %}
+{% block content %}
+  <h1>설정</h1>
+
+  <section class="card">
+    <h2>단어 CSV 가져오기</h2>
+    <form class="stack-form" method="post" action="/settings/import" enctype="multipart/form-data">
+      <input type="file" name="csv_file" accept=".csv,text/csv" required>
+      <div class="row"><button class="button" type="submit">가져오기</button></div>
+    </form>
+    <ul class="note">
+      <li>UTF-8 CSV. 첫 줄은 헤더: <code>영단어,뜻</code> 또는 <code>word,meaning_ko,...</code></li>
+      <li>선택 열: <code>freq_rank</code>, <code>level</code>, <code>pos</code>, <code>example_en</code>, <code>example_ko</code></li>
+      <li>같은 철자(대소문자 무시)는 한 단어로 합치고 뜻을 '; ' 로 잇습니다.</li>
+      <li>이미 등록된 단어는 파일의 뜻으로 바꿉니다. 학습 기록은 그대로 남습니다.</li>
+    </ul>
+  </section>
+
+  {% if report %}
+    {% set parsed = report.parsed %}
+    <section class="card">
+      <h2>가져오기 결과 — {{ report.file_name }}</h2>
+      {% if parsed.missing_columns %}
+        <p class="flash flash-error">필수 열이 없어 가져오지 않았습니다: {{ parsed.missing_columns | join(', ') }}
+          (영단어 열은 <code>영단어</code>/<code>word</code>, 뜻 열은 <code>뜻</code>/<code>meaning_ko</code>)</p>
+      {% else %}
+        <ul>
+          <li>새로 등록: <strong>{{ report.summary.inserted }}</strong>개</li>
+          <li>뜻 갱신(이미 있던 단어): <strong>{{ report.summary.updated }}</strong>개</li>
+          <li>파일 안 같은 철자 합침: <strong>{{ parsed.merged_count }}</strong>행</li>
+          <li>건너뛴 행: <strong>{{ parsed.skipped | length }}</strong>행</li>
+        </ul>
+        {% if parsed.skipped %}
+          <details>
+            <summary>건너뛴 행 보기</summary>
+            <ul class="note">
+              {% for row in parsed.skipped[:200] %}<li>{{ row.line_no }}번째 줄: {{ row.reason }}</li>{% endfor %}
+              {% if parsed.skipped | length > 200 %}<li>… 외 {{ parsed.skipped | length - 200 }}행</li>{% endif %}
+            </ul>
+          </details>
+        {% endif %}
+        <p><a class="button ghost" href="/words">단어 목록 보기</a></p>
+      {% endif %}
+    </section>
+  {% endif %}
+{% endblock %}
