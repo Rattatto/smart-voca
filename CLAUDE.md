@@ -22,7 +22,7 @@
 | 주요 라이브러리 | React (UI), Dexie (IndexedDB 래퍼, 로컬 DB), Vite (빌드), Vitest (테스트) |
 | 프론트엔드 | 웹 브라우저 앱, PWA (홈 화면 설치, 오프라인 동작) |
 | DB | 브라우저 내 로컬 저장 (서버 없음), IndexedDB + Dexie. 설정도 같은 DB 에 저장 |
-| 배포 | GitHub Pages (예정, 5단계) |
+| 배포 | GitHub Pages https://rattatto.github.io/smart-voca/ (main 의 `web/` 변경을 push 하면 Actions 가 테스트·빌드·배포) |
 | 실행 환경 | PC·휴대폰 브라우저, 개발 PC: Windows 11, Node.js 24 |
 
 ### 브랜치와 작업 폴더 (2026-11-25, 앱·웹 병행)
@@ -122,7 +122,9 @@ SDLC 단계별 산출물(§2), AI 에이전트 협업 지침(§3), 파일 관리
 | 테스트 | `npm test` (Vitest, `src/**/*.test.ts`) |
 | 타입 검사 | `npx tsc -b` |
 | 개발 서버 | `npm run dev` (http://localhost:5173) |
-| 배포용 빌드 | `npm run build` (결과물 `web/dist/`, 커밋하지 않음) |
+| 배포용 빌드 | `npm run build` (결과물 `web/dist/`, 커밋하지 않음. 기본 경로 `/smart-voca/`) |
+| 배포본 미리보기 | `npx vite preview` (http://localhost:4173/smart-voca/, 서비스 워커 포함) |
+| 배포 | `main` 에 `web/**` 변경을 push 하면 `.github/workflows/deploy-pages.yml` 이 자동 실행. 테스트 실패 시 배포 안 함 |
 
 - **타입 설정 분리**: 앱 코드는 `tsconfig.app.json` (Node API 사용 불가), 테스트는 `tsconfig.test.json` (Node 타입 허용). 앱 코드에서 `node:fs` 등을 쓰면 타입 검사에서 막힌다.
 - **날짜 함정**: 날짜는 `YYYY-MM-DD` 문자열로 다루고 계산은 `web/src/domain/localDate.ts` 도우미만 쓴다. JS `Date` 를 직접 비교하면 시간대 때문에 하루가 밀릴 수 있다.
