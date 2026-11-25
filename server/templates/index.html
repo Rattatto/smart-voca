@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- 2026-11-25 - Smart Voca - 첫 화면 (1주차 뼈대). 주소는 / 로 시작하고 속성은 따옴표로 감싼다 (R-04) -->
+<!-- 파일 위치: server/templates/index.html -->
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>스마트보카</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <h1>스마트보카</h1>
+      <p class="motto">동사만 알아도 대박이다</p>
+    </header>
+
+    <section class="card">
+      <h2>오늘의 학습</h2>
+      <p>등록된 단어: <strong>{{ word_count }}</strong>개</p>
+      <p class="note">단어 등록, 암기, 시험, 통계 화면을 차례로 만들고 있습니다.</p>
+    </section>
+  </main>
+</body>
+</html>

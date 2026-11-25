@@ -1,0 +1,34 @@
+/* 2026-11-25 - Smart Voca - 서버 앱 공통 스타일 (1주차 뼈대) */
+/* 파일 위치: server/static/style.css */
+
+:root {
+  --bg: #f6f3ee;
+  --ink: #2b2a28;
+  --muted: #6b675f;
+  --card: #ffffff;
+  --accent: #3d6b4f;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, "Malgun Gothic", sans-serif;
+  line-height: 1.6;
+}
+
+.page { max-width: 640px; margin: 0 auto; padding: 32px 20px; }
+
+.hero h1 { margin: 0; font-size: 2rem; color: var(--accent); }
+.motto { margin: 4px 0 24px; color: var(--muted); }
+
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+.card h2 { margin-top: 0; font-size: 1.2rem; }
+.note { color: var(--muted); font-size: 0.9rem; }
