@@ -1,111 +1,401 @@
+/* 2026-11-25 - Smart Voca - 앱 전체 스타일 (흰 바탕, 주황 포인트, ADR-013 팔레트를 CSS 변수로 이관)
+   파일 위치: web/src/index.css */
+
+/* 색 이름은 Kotlin Theme.kt 의 Material 색 역할과 같게 둔다. 화면 코드에서는 이 변수만 쓴다 */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --primary: #c75b12;
+  --on-primary: #ffffff;
+  --primary-container: #fbe3d0;
+  --on-primary-container: #3a1a08;
+  --secondary: #9a5b32;
+  --secondary-container: #f3e1d3;
+  --on-secondary-container: #3a2418;
+  --background: #ffffff;
+  --on-background: #2e1d14;
+  --surface-variant: #fbf3ec;
+  --on-surface-variant: #6b4a3a;
+  --outline: #b89a88;
+  --outline-soft: rgb(184 154 136 / 40%);
+  --correct: #2e7d32;
+  --wrong: #c62828;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --radius-card: 16px;
+  --radius-pill: 24px;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  /* ADR-013 은 흰 바탕을 정했으므로 다크 모드는 두지 않는다 */
+  color-scheme: light;
+  font-family: system-ui, -apple-system, 'Segoe UI', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  line-height: 1.5;
+  color: var(--on-background);
+  background: var(--background);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
+* {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
+  background: var(--background);
 }
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
+h2,
+h3,
 p {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+/* ---------- 공통 레이아웃 ---------- */
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.app-header {
+  text-align: center;
+}
+
+.app-title {
+  font-size: 1.75rem;
+  color: var(--primary);
+}
+
+.app-motto {
+  font-size: 0.9rem;
+  color: var(--on-surface-variant);
+}
+
+.screen-title {
+  font-size: 1.35rem;
+}
+
+.muted {
+  color: var(--on-surface-variant);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ---------- 버튼 ---------- */
+.button-row {
+  display: flex;
+  gap: 12px;
+}
+
+.button-row > .button {
+  flex: 1;
+}
+
+.button {
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.button:focus-visible,
+.choice:focus-visible,
+.chip:focus-visible {
+  outline: 3px solid var(--secondary);
+  outline-offset: 2px;
+}
+
+.button.secondary {
+  background: var(--secondary-container);
+  color: var(--on-secondary-container);
+}
+
+.button.outlined {
+  background: transparent;
+  color: var(--primary);
+  border-color: var(--outline);
+}
+
+.button.full {
+  width: 100%;
+}
+
+/* ---------- 오늘의 단어 ---------- */
+.today-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 65fr) minmax(0, 35fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.word-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  border: 1px solid var(--outline-soft);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  background: var(--background);
+}
+
+.word-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.word-number {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.word-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.badge {
+  padding: 2px 6px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  background: var(--primary-container);
+  color: var(--on-primary-container);
+}
+
+.word-meaning {
+  margin-top: 4px;
+  font-size: 1.05rem;
+}
+
+.word-example {
+  margin-top: 8px;
+  color: var(--on-surface-variant);
+}
+
+.word-example-ko {
+  font-size: 0.85rem;
+  color: var(--on-surface-variant);
+}
+
+.word-done {
+  margin-top: 10px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.word-card .button {
+  margin-top: 10px;
+  min-height: 44px;
+}
+
+.tip-card {
+  border-radius: var(--radius-card);
+  padding: 14px;
+  background: var(--surface-variant);
+  position: sticky;
+  top: 16px;
+}
+
+.tip-label {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.tip-word {
+  margin-top: 8px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.tip-category {
+  font-size: 0.85rem;
+  color: var(--on-surface-variant);
+}
+
+.tip-text {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+/* 휴대폰 폭에서는 TIP 을 목록 위로 올린다. 나란히 두면 카드가 너무 좁아진다 */
+@media (max-width: 640px) {
+  .today-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .tip-card {
+    position: static;
+    order: -1;
+  }
+}
+
+/* ---------- 시험 ---------- */
+.exam-word {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.exam-meaning {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.choice {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 1px solid var(--outline);
+  border-radius: 12px;
+  background: var(--background);
+  color: var(--on-background);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.choice:disabled {
+  cursor: default;
+}
+
+.choice.is-answer {
+  border-color: var(--correct);
+  border-width: 2px;
+}
+
+.choice.is-picked-wrong {
+  border-color: var(--wrong);
+  border-width: 2px;
+}
+
+.text-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--outline);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 1.1rem;
+}
+
+.text-input:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: 0;
+}
+
+.feedback {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.feedback.correct {
+  color: var(--correct);
+}
+
+.feedback.wrong {
+  color: var(--wrong);
+}
+
+.stage-note {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.exam-result {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* ---------- 설정 ---------- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-weight: 600;
+}
+
+.field input[type='range'] {
+  width: 100%;
+  accent-color: var(--primary);
+}
+
+.chip-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--outline);
+  border-radius: 10px;
+  background: var(--background);
+  color: var(--on-background);
+  font: inherit;
+  cursor: pointer;
+}
+
+.chip[aria-pressed='true'] {
+  background: var(--secondary-container);
+  border-color: var(--secondary);
+  font-weight: 600;
+}
+
+.section {
+  border-top: 1px solid var(--outline-soft);
+  padding-top: 16px;
+}
+
+.skipped-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.9rem;
+  color: var(--on-surface-variant);
+}
+
+.file-input {
+  font: inherit;
+}
+
+/* ---------- 날짜 변경 알림 ---------- */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(46 29 20 / 40%);
+}
+
+.dialog {
+  width: min(360px, 100%);
+  padding: 20px;
+  border-radius: var(--radius-card);
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
