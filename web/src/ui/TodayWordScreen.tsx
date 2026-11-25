@@ -1,25 +1,32 @@
-// 2026-11-25 - Smart Voca - 오늘의 일일 단어 카드 목록, 학습 완료 버튼, 기능어 TIP 카드 (FR-010, FR-013, FR-020). Kotlin TodayWordScreen.kt 이관
+// 2026-11-25 - Smart Voca - 오늘의 단어 카드 학습: 한 장씩 노출, 뜻과 가이드를 보고 영단어를 두 번 따라 쓰면 완료 (FR-010, FR-013, FR-020)
 // 파일 위치: web/src/ui/TodayWordScreen.tsx
+// 2026-11-25 변경: 목록 + "학습 완료" 버튼 방식 → 카드 한 장씩 + 따라 쓰기 두 번 방식 (사용자 결정)
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { STUDY_TYPING_REPEAT } from '../appConfig'
 import type { AppServices } from '../data/appServices'
 import type { PickedWord } from '../domain/dailyWordSelector'
 import type { FunctionWordTip } from '../domain/functionWords'
 import type { LocalDate } from '../domain/localDate'
+import { type BlankState, firstUnstudiedIndex, isCardComplete, judgeBlank } from '../domain/studyFlow'
+import './study.css'
 
 interface Props {
   services: AppServices
   today: LocalDate
   /** 바뀌면 목록을 다시 읽는다 (가져오기 성공 등). */
   refreshKey: number
-  onOpenSettings: () => void
+  onStartExam: () => void
 }
 
+/** 완료 표시를 잠깐 보여 준 뒤 다음 카드로 넘어간다 (ms). */
+const NEXT_CARD_DELAY_MS = 700
+
 /**
- * 오늘의 단어 목록과 기능어 TIP. 목록이 없으면 현재 설정으로 만들고, 있으면 저장된 목록을 쓴다.
- * 설정을 바꿔도 오늘 목록은 바뀌지 않는다 (FR-045).
+ * 오늘 목록(설정한 일일 개수)을 카드로 한 장씩 보여 준다. 완료한 카드는 건너뛴다.
+ * 목록은 같은 날 다시 열어도 그대로다 (FR-013). 완료 기록은 재노출 일정을 올린다 (FR-020).
  */
-export function TodayWordScreen({ services, today, refreshKey, onOpenSettings }: Props) {
+export function TodayWordScreen({ services, today, refreshKey, onStartExam }: Props) {
   const [items, setItems] = useState<PickedWord[] | null>(null)
   const [studiedIds, setStudiedIds] = useState<ReadonlySet<number>>(new Set())
   const [errorText, setErrorText] = useState<string | null>(null)
@@ -46,91 +53,172 @@ export function TodayWordScreen({ services, today, refreshKey, onOpenSettings }:
     }
   }, [services, today, refreshKey])
 
-  const markStudied = async (wordId: number) => {
+  /** 완료 기록은 바로 저장하고, 다음 카드로 넘기는 것만 늦춘다. 완료 표시를 잠깐 보여 주기 위해서다. */
+  const completeCard = async (wordId: number) => {
     await services.study.markStudied(wordId, today)
-    setStudiedIds((previous) => new Set(previous).add(wordId))
+    setTimeout(() => setStudiedIds((previous) => new Set(previous).add(wordId)), NEXT_CARD_DELAY_MS)
   }
 
-  const doneCount = items?.filter((item) => studiedIds.has(item.word.id)).length ?? 0
+  const currentIndex = items ? firstUnstudiedIndex(items.map((item) => item.word.id), studiedIds) : -1
+  const doneCount = items ? items.filter((item) => studiedIds.has(item.word.id)).length : 0
 
   return (
     <section className="stack" aria-labelledby="today-title">
       <h2 id="today-title" className="screen-title">
-        오늘의 단어 ({today})
-        {items && items.length > 0 && <span className="muted"> · {doneCount}/{items.length} 완료</span>}
+        오늘의 단어 <span className="muted">({today})</span>
       </h2>
+      {items && items.length > 0 && <ProgressBar done={doneCount} total={items.length} />}
       <div className="today-layout">
-        <WordList errorText={errorText} items={items} studiedIds={studiedIds} onStudied={markStudied} onOpenSettings={onOpenSettings} />
+        <div className="stack">
+          {errorText ? (
+            <p role="alert">{errorText}</p>
+          ) : items === null ? (
+            <p className="muted">불러오는 중</p>
+          ) : items.length === 0 ? (
+            <p className="card">오늘 학습할 단어가 없습니다.</p>
+          ) : currentIndex === -1 ? (
+            <AllDone items={items} onStartExam={onStartExam} />
+          ) : (
+            <StudyCard
+              key={items[currentIndex].word.id}
+              item={items[currentIndex]}
+              number={currentIndex + 1}
+              total={items.length}
+              onComplete={completeCard}
+            />
+          )}
+        </div>
         <DailyTipPanel tip={services.functionWords.dailyTip(today)} />
       </div>
     </section>
   )
 }
 
-interface WordListProps {
-  errorText: string | null
-  items: PickedWord[] | null
-  studiedIds: ReadonlySet<number>
-  onStudied: (wordId: number) => void
-  onOpenSettings: () => void
-}
-
-function WordList({ errorText, items, studiedIds, onStudied, onOpenSettings }: WordListProps) {
-  if (errorText) return <p role="alert">{errorText}</p>
-  if (items === null) return <p className="muted">불러오는 중</p>
-  if (items.length === 0) {
-    // 빈 상태에서 바로 가져오기로 갈 수 있게 한다 (11/11 요청 2.2 F)
-    return (
-      <div className="card stack">
-        <p>가져온 단어가 없습니다. 설정에서 단어 CSV 를 먼저 가져오세요.</p>
-        <button type="button" className="button" onClick={onOpenSettings}>
-          단어 가져오러 가기
-        </button>
-      </div>
-    )
-  }
+function ProgressBar({ done, total }: { done: number; total: number }) {
   return (
-    <ol className="word-list">
-      {items.map((item, index) => (
-        <WordCard
-          key={item.word.id}
-          number={index + 1}
-          item={item}
-          studied={studiedIds.has(item.word.id)}
-          onStudied={() => onStudied(item.word.id)}
-        />
-      ))}
-    </ol>
+    <div className="study-progress">
+      <div className="study-progress-track" role="progressbar" aria-valuemin={0} aria-valuemax={total} aria-valuenow={done} aria-label="오늘 학습 진행">
+        <div className="study-progress-fill" style={{ width: `${(done / total) * 100}%` }} />
+      </div>
+      <span className="muted">
+        {done} / {total} 완료
+      </span>
+    </div>
   )
 }
 
-/** 단어 한 개를 카드로 보여 준다. 단어와 뜻이 위, 예문이 가운데, 완료 버튼이 아래에 온다. */
-function WordCard({ number, item, studied, onStudied }: { number: number; item: PickedWord; studied: boolean; onStudied: () => void }) {
+interface StudyCardProps {
+  item: PickedWord
+  number: number
+  total: number
+  onComplete: (wordId: number) => Promise<void>
+}
+
+/**
+ * 카드 한 장. 뜻과 영단어(가이드)를 보여 주고, 빈칸 두 개에 차례로 따라 쓰게 한다.
+ * 첫 칸이 맞아야 둘째 칸이 열린다. 두 칸이 모두 맞으면 완료를 기록하고 잠시 뒤 다음 카드로 넘어간다.
+ * 카드가 바뀌면 `key` 가 바뀌어 입력 상태가 새로 시작된다.
+ */
+function StudyCard({ item, number, total, onComplete }: StudyCardProps) {
   const { word } = item
+  const [inputs, setInputs] = useState<string[]>(() => Array(STUDY_TYPING_REPEAT).fill(''))
+  const [completed, setCompleted] = useState(false)
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+
+  const states: BlankState[] = inputs.map((input) => judgeBlank(input, word.word))
+  // 앞 칸이 모두 맞아야 다음 칸을 쓸 수 있다
+  const isUnlocked = (index: number) => states.slice(0, index).every((state) => state === 'correct')
+
+  const onChange = (index: number, value: string) => {
+    if (completed) return
+    const next = inputs.map((input, i) => (i === index ? value : input))
+    setInputs(next)
+    if (judgeBlank(value, word.word) === 'correct' && index + 1 < next.length) {
+      // 맞으면 다음 칸으로 커서를 옮긴다. 상태 반영 후 칸이 열리므로 다음 틱에 옮긴다
+      setTimeout(() => inputRefs.current[index + 1]?.focus(), 0)
+    }
+    if (isCardComplete(next, word.word, STUDY_TYPING_REPEAT)) {
+      setCompleted(true)
+      void onComplete(word.id)
+    }
+  }
+
   return (
-    <li className="card word-card">
+    <article className={`card study-card ${completed ? 'is-done' : ''}`} aria-label={`단어 카드 ${number} / ${total}`}>
+      {/* intro.html 의 단어 카드 형식: 배지 → 영단어 + 품사 → 뜻 → 예문 */}
       <div className="word-head">
-        <span className="word-number">{number}</span>
-        <span className="word-text" lang="en">
+        <span className={`badge ${item.source === 'review' ? 'review' : ''}`}>{item.source === 'review' ? '복습' : '새 단어'}</span>
+        <span className="word-number">
+          {number} / {total}
+        </span>
+      </div>
+
+      <p>
+        <span className="study-word" lang="en">
           {word.word}
         </span>
-        {item.source === 'review' && <span className="badge">재노출</span>}
-      </div>
-      <p className="word-meaning">{word.meaningKo}</p>
+        {word.pos === 'verb' && <span className="pos">동사</span>}
+      </p>
+      <p className="study-meaning">{word.meaningKo}</p>
       {word.exampleEn && (
         <p className="word-example" lang="en">
           {word.exampleEn}
         </p>
       )}
       {word.exampleKo && <p className="word-example-ko">{word.exampleKo}</p>}
-      {studied ? (
-        <p className="word-done">오늘 완료됨</p>
-      ) : (
-        <button type="button" className="button full" onClick={onStudied}>
-          학습 완료
-        </button>
-      )}
-    </li>
+
+      <p className="study-guide">위 영단어를 보고 아래 빈칸에 {STUDY_TYPING_REPEAT}번 직접 써 보세요.</p>
+      <div className="study-blanks">
+        {inputs.map((input, index) => (
+          <label key={index} className="study-blank">
+            <span className="study-blank-label">{index + 1}번째</span>
+            {/* 휴대폰 키보드가 첫 글자를 대문자로 바꾸거나 자동 수정하지 않게 끈다 */}
+            <input
+              ref={(element) => {
+                inputRefs.current[index] = element
+              }}
+              className={`text-input study-input state-${states[index]}`}
+              lang="en"
+              value={input}
+              placeholder={word.word}
+              onChange={(event) => onChange(index, event.target.value)}
+              disabled={completed || !isUnlocked(index)}
+              autoFocus={index === 0}
+              autoComplete="off"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              aria-invalid={states[index] === 'wrong'}
+            />
+            <span className="study-mark" aria-hidden="true">
+              {states[index] === 'correct' ? '✓' : states[index] === 'wrong' ? '✗' : ''}
+            </span>
+          </label>
+        ))}
+      </div>
+      <p className="study-status" role="status">
+        {completed ? '학습 완료! 다음 카드로 넘어갑니다' : states.includes('wrong') ? '철자를 다시 확인해 보세요' : ''}
+      </p>
+    </article>
+  )
+}
+
+/** 오늘 카드를 모두 끝냈을 때. 오늘 본 단어를 다시 보여 주고 시험으로 이어 준다. */
+function AllDone({ items, onStartExam }: { items: PickedWord[]; onStartExam: () => void }) {
+  return (
+    <div className="card stack study-all-done">
+      <p className="study-done-title">오늘 단어 {items.length}개를 모두 학습했습니다 🎉</p>
+      <ul className="study-done-list">
+        {items.map((item) => (
+          <li key={item.word.id}>
+            <span lang="en">{item.word.word}</span> <span className="muted">{item.word.meaningKo}</span>
+          </li>
+        ))}
+      </ul>
+      <button type="button" className="button" onClick={onStartExam}>
+        시험 보러 가기
+      </button>
+    </div>
   )
 }
 

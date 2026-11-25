@@ -1,0 +1,121 @@
+word,pos,meaning_ko,example_en,example_ko,freq_rank,level
+go,verb,가다,Let's go grab some lunch.,점심 먹으러 가자.,1,basic
+come,verb,오다,Come over to my place this weekend.,이번 주말에 우리 집에 놀러 와.,2,basic
+get,verb,"얻다, 받다",Can you get me a coffee on your way back?,돌아오는 길에 커피 한 잔 사다 줄래?,3,basic
+make,verb,만들다,I'll make dinner tonight. Want to join?,오늘 저녁은 내가 만들게. 같이 먹을래?,4,basic
+take,verb,"가져가다, 타다",Take your time. There's no rush.,천천히 해. 서두를 필요 없어.,5,basic
+see,verb,보다,Nice to see you again!,다시 만나서 반가워!,6,basic
+know,verb,알다,Do you know where the station is?,역이 어디 있는지 알아?,7,basic
+think,verb,생각하다,I think we should leave a bit earlier.,우리 조금 더 일찍 떠나는 게 좋을 것 같아.,8,basic
+want,verb,원하다,Do you want something to drink?,마실 것 좀 줄까?,9,basic
+say,verb,말하다,,,10,basic
+tell,verb,말해 주다,Tell me what happened yesterday.,어제 무슨 일이 있었는지 말해 줘.,11,basic
+give,verb,주다,Can you give me a hand with these bags?,이 가방들 좀 들어 줄래?,12,basic
+find,verb,"찾다, 발견하다",I can't find my keys anywhere.,열쇠를 어디에서도 못 찾겠어.,13,basic
+look,verb,쳐다보다,Look at this photo. It's amazing!,이 사진 좀 봐. 정말 멋져!,14,basic
+use,verb,사용하다,Can I use your charger for a minute?,잠깐 네 충전기 써도 될까?,15,basic
+work,verb,일하다,The new app doesn't work on my phone.,새 앱이 내 휴대폰에서 작동하지 않아.,16,basic
+call,verb,"전화하다, 부르다",I'll call you when I get home.,집에 도착하면 전화할게.,17,basic
+try,verb,해 보다,Let me try this dress on.,이 드레스 한번 입어 볼게.,18,basic
+ask,verb,"묻다, 부탁하다",You can ask me anything.,뭐든지 물어봐도 돼.,19,basic
+need,verb,필요하다,I need a break. Let's stop for a while.,좀 쉬어야겠어. 잠깐 멈추자.,20,basic
+feel,verb,느끼다,I feel tired after the long meeting.,긴 회의 끝나고 나니 피곤해.,21,basic
+leave,verb,"떠나다, 두고 가다",We should leave before it gets dark.,어두워지기 전에 떠나는 게 좋겠어.,22,basic
+put,verb,"놓다, 두다",Please put your bag over there.,가방은 저쪽에 놔 주세요.,23,basic
+mean,verb,의미하다,,,24,basic
+keep,verb,"계속하다, 간직하다",Keep the change.,잔돈은 가지세요.,25,basic
+let,verb,하게 해 주다,Let me know if you need anything.,뭐 필요하면 알려 줘.,26,basic
+help,verb,돕다,Thanks for your help.,도와줘서 고마워.,27,basic
+talk,verb,이야기하다,Can we talk later?,나중에 얘기할 수 있을까?,28,basic
+turn,verb,"돌다, 돌리다",,,29,basic
+start,verb,시작하다,The movie is about to start.,영화가 곧 시작해.,30,basic
+show,verb,보여 주다,Can you show me how to use this?,이거 어떻게 쓰는지 보여 줄래?,31,basic
+hear,verb,"듣다, 들리다",I didn't hear you. Could you repeat that?,못 들었어. 다시 말해 줄래?,32,basic
+play,verb,"놀다, 경기하다",Do you want to play tennis this weekend?,이번 주말에 테니스 칠래?,33,basic
+run,verb,달리다,I run every morning before work.,나는 출근 전에 매일 아침 달리기를 해.,34,basic
+move,verb,"움직이다, 이사하다",We're going to move to a new apartment.,우리 새 아파트로 이사 갈 거야.,35,basic
+like,verb,좋아하다,,,36,basic
+live,verb,살다,Where do you live now?,지금 어디 살아?,37,basic
+believe,verb,믿다,,,38,basic
+bring,verb,가져오다,Don't forget to bring your umbrella.,우산 가져가는 거 잊지 마.,39,basic
+eat,verb,먹다,,,40,basic
+happen,verb,"일어나다, 생기다",What happened to your phone?,네 휴대폰 어떻게 된 거야?,41,intermediate
+write,verb,"쓰다, 적다",Could you write your name here?,여기에 이름 써 줄래?,42,intermediate
+sit,verb,앉다,,,43,intermediate
+stand,verb,서다,,,44,intermediate
+lose,verb,"잃어버리다, 지다",,,45,intermediate
+pay,verb,돈을 내다,I'll pay for lunch today.,오늘 점심은 내가 낼게.,46,intermediate
+meet,verb,만나다,Nice to meet you!,만나서 반가워!,47,intermediate
+learn,verb,배우다,I'm learning to cook Italian food.,이탈리아 음식 요리를 배우고 있어.,48,intermediate
+change,verb,바꾸다,Can we change the time of the meeting?,회의 시간 바꿀 수 있을까?,49,intermediate
+understand,verb,이해하다,I don't understand. Can you explain it again?,잘 모르겠어. 다시 설명해 줄래?,50,intermediate
+watch,verb,"지켜보다, 시청하다",,,51,intermediate
+follow,verb,따라가다,,,52,intermediate
+stop,verb,멈추다,Please stop talking for a second.,잠깐만 말 좀 멈춰 줘.,53,intermediate
+speak,verb,(언어를) 말하다,Do you speak English?,영어 할 줄 알아?,54,intermediate
+read,verb,읽다,I like to read before bed.,나는 자기 전에 책 읽는 걸 좋아해.,55,intermediate
+spend,verb,(돈·시간을) 쓰다,I spend too much money on coffee.,커피에 돈을 너무 많이 써.,56,intermediate
+grow,verb,"자라다, 키우다",My kids grow so fast.,우리 아이들이 정말 빨리 자라.,57,intermediate
+open,verb,열다,,,58,intermediate
+walk,verb,걷다,,,59,intermediate
+win,verb,이기다,,,60,intermediate
+remember,verb,기억하다,I don't remember her name.,그녀 이름이 기억 안 나.,61,intermediate
+buy,verb,사다,Where did you buy that jacket?,그 재킷 어디서 샀어?,62,intermediate
+wait,verb,기다리다,,,63,intermediate
+send,verb,보내다,,,64,intermediate
+decide,verb,결정하다,,,65,intermediate
+sleep,verb,자다,,,66,intermediate
+drink,verb,마시다,,,67,intermediate
+cook,verb,요리하다,,,68,intermediate
+wear,verb,"입다, 착용하다",,,69,intermediate
+choose,verb,고르다,,,70,intermediate
+forget,verb,잊다,,,71,intermediate
+carry,verb,들고 다니다,,,72,intermediate
+catch,verb,잡다,,,73,intermediate
+close,verb,닫다,,,74,intermediate
+drive,verb,운전하다,,,75,intermediate
+visit,verb,방문하다,,,76,intermediate
+sell,verb,팔다,,,77,intermediate
+finish,verb,끝내다,,,78,intermediate
+worry,verb,걱정하다,,,79,intermediate
+love,verb,사랑하다,I love this song!,이 노래 정말 좋아!,80,intermediate
+explain,verb,설명하다,,,81,advanced
+agree,verb,동의하다,,,82,advanced
+allow,verb,허락하다,,,83,advanced
+suggest,verb,제안하다,,,84,advanced
+borrow,verb,빌리다,,,85,advanced
+lend,verb,빌려주다,,,86,advanced
+prefer,verb,더 좋아하다,,,87,advanced
+recommend,verb,추천하다,,,88,advanced
+mention,verb,언급하다,,,89,advanced
+expect,verb,"기대하다, 예상하다",,,90,advanced
+avoid,verb,피하다,,,91,advanced
+apologize,verb,사과하다,,,92,advanced
+complain,verb,불평하다,,,93,advanced
+invite,verb,초대하다,,,94,advanced
+prepare,verb,준비하다,,,95,advanced
+imagine,verb,상상하다,,,96,advanced
+describe,verb,묘사하다,,,97,advanced
+compare,verb,비교하다,,,98,advanced
+admit,verb,인정하다,,,99,advanced
+deny,verb,부인하다,,,100,advanced
+refuse,verb,거절하다,,,101,advanced
+promise,verb,약속하다,,,102,advanced
+deliver,verb,배달하다,,,103,advanced
+recover,verb,회복하다,,,104,advanced
+delay,verb,미루다,,,105,advanced
+cancel,verb,취소하다,,,106,advanced
+arrange,verb,"마련하다, 정리하다",,,107,advanced
+handle,verb,"다루다, 처리하다",,,108,advanced
+manage,verb,"해내다, 관리하다",,,109,advanced
+encourage,verb,격려하다,,,110,advanced
+persuade,verb,설득하다,,,111,advanced
+guess,verb,추측하다,,,112,advanced
+realize,verb,깨닫다,,,113,advanced
+notice,verb,알아차리다,,,114,advanced
+celebrate,verb,축하하다,,,115,advanced
+rely,verb,의지하다,,,116,advanced
+appreciate,verb,고마워하다,,,117,advanced
+hesitate,verb,망설이다,,,118,advanced
+convince,verb,확신시키다,,,119,advanced
+solve,verb,해결하다,,,120,advanced

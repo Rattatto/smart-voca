@@ -1,0 +1,175 @@
+/* 2026-11-25 - Smart Voca - 카드 학습 화면과 QR 공유 영역 스타일
+   파일 위치: web/src/ui/study.css
+   색은 index.css 의 CSS 변수만 쓴다 (팔레트가 바뀌어도 이 파일은 그대로) */
+
+.study-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.study-progress-track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--birch, var(--surface-variant));
+  overflow: hidden;
+}
+
+/* 진행 막대: 귤색 (intro.html 타임라인 첫 점과 같은 색) */
+.study-progress-fill {
+  height: 100%;
+  background: var(--tangerine, var(--primary));
+  transition: width 0.3s ease;
+}
+
+/* 단어 카드: intro.html 의 .word-card (자작나무 바탕 + 시나몬 아래 테두리) */
+.card.study-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--birch, var(--surface-variant));
+  border: 0;
+  border-bottom: 5px solid var(--cinnamon, var(--secondary));
+  padding: 18px 20px;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.card.study-card.is-done {
+  border-bottom-color: var(--correct);
+  background: #e6efd9;
+}
+
+.study-word {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--on-background);
+  letter-spacing: 0.01em;
+}
+
+.study-meaning {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.study-input {
+  background: #ffffff;
+}
+
+.study-guide {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--on-surface-variant);
+}
+
+.study-blanks {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.study-blank {
+  display: grid;
+  grid-template-columns: auto 1fr 1.5em;
+  align-items: center;
+  gap: 8px;
+}
+
+.study-blank-label {
+  font-size: 0.85rem;
+  color: var(--on-surface-variant);
+  min-width: 3.5em;
+}
+
+/* 가이드(placeholder)는 흐리게 보여서 따라 쓸 글자임을 알 수 있게 한다 */
+.study-input::placeholder {
+  color: var(--outline);
+  opacity: 0.6;
+}
+
+.study-input:disabled {
+  background: rgb(255 255 255 / 55%);
+}
+
+.study-input.state-correct {
+  border-color: var(--correct);
+  border-width: 2px;
+}
+
+.study-input.state-wrong {
+  border-color: var(--wrong);
+  border-width: 2px;
+}
+
+.study-mark {
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.study-input.state-correct + .study-mark {
+  color: var(--correct);
+}
+
+.study-input.state-wrong + .study-mark {
+  color: var(--wrong);
+}
+
+.study-status {
+  min-height: 1.5em;
+  font-weight: 600;
+  color: var(--cinnamon, var(--primary));
+}
+
+.study-done-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.study-done-list {
+  margin: 0;
+  padding-left: 20px;
+  columns: 2;
+}
+
+/* ---------- QR 공유 ---------- */
+.share {
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid var(--outline-soft);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.share-qr {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.share-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.share-url {
+  font-size: 0.85rem;
+  word-break: break-all;
+  color: var(--primary);
+}
+
+@media (max-width: 640px) {
+  .study-done-list {
+    columns: 1;
+  }
+
+  /* 카드 학습에서는 입력이 핵심이라 휴대폰 폭에서도 카드를 먼저, TIP 을 아래에 둔다 (index.css 의 order: -1 을 덮어씀) */
+  .today-layout .tip-card {
+    order: 0;
+  }
+}

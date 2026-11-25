@@ -2,11 +2,14 @@
 // 파일 위치: web/src/App.tsx
 
 import { useEffect, useState } from 'react'
+import { SHOW_SETTINGS } from './appConfig'
 import { type AppServices, getAppServices } from './data/appServices'
 import { shouldNotifyDayChange } from './domain/dayChangeRules'
 import { type LocalDate, todayLocal } from './domain/localDate'
 import { ExamScreen } from './ui/ExamScreen'
 import { SettingsScreen } from './ui/SettingsScreen'
+import { SharePanel } from './ui/SharePanel'
+import './ui/layout.css'
 import { TodayWordScreen } from './ui/TodayWordScreen'
 
 type Screen = 'today' | 'exam' | 'settings'
@@ -66,29 +69,53 @@ export default function App() {
     )
   }
 
+  // 화면 형식은 intro.html 을 따른다: 어두운 돌판 hero (화면 전체 폭) → 크림 본문 → 돌판 바닥글
   return (
-    <main className="app">
-      {screen === 'settings' && (
-        <SettingsScreen services={services} onImported={() => setImportCount((n) => n + 1)} onClose={() => setScreen('today')} />
-      )}
-      {screen === 'exam' && <ExamScreen services={services} today={today} onClose={() => setScreen('today')} />}
-      {screen === 'today' && (
-        <>
-          <header className="app-header">
-            <h1 className="app-title">스마트보카</h1>
-            <p className="app-motto">동사만 알아도 대박이다</p>
-          </header>
-          <div className="button-row">
-            <button type="button" className="button secondary" onClick={() => setScreen('settings')}>
-              설정
-            </button>
-            <button type="button" className="button" onClick={() => setScreen('exam')}>
-              시험 시작
-            </button>
+    <>
+      <header className="hero">
+        <div className="wrap hero-inner">
+          <div>
+            <p className="eyebrow">SMART VOCA · 스마트보카</p>
+            <h1 className="hero-title">
+              <em>동사</em>만 알아도 대박이다
+            </h1>
           </div>
-          <TodayWordScreen services={services} today={today} refreshKey={importCount} onOpenSettings={() => setScreen('settings')} />
-        </>
-      )}
+          <nav className="hero-actions" aria-label="주 메뉴">
+            {screen !== 'today' && (
+              <button type="button" className="button hero-button ghost" onClick={() => setScreen('today')}>
+                오늘의 단어
+              </button>
+            )}
+            {SHOW_SETTINGS && screen !== 'settings' && (
+              <button type="button" className="button hero-button ghost" onClick={() => setScreen('settings')}>
+                설정
+              </button>
+            )}
+            {screen !== 'exam' && (
+              <button type="button" className="button hero-button" onClick={() => setScreen('exam')}>
+                시험 시작
+              </button>
+            )}
+          </nav>
+        </div>
+      </header>
+
+      <main className="app wrap">
+        {SHOW_SETTINGS && screen === 'settings' && (
+          <SettingsScreen services={services} onImported={() => setImportCount((n) => n + 1)} onClose={() => setScreen('today')} />
+        )}
+        {screen === 'exam' && <ExamScreen services={services} today={today} onClose={() => setScreen('today')} />}
+        {screen === 'today' && (
+          <TodayWordScreen services={services} today={today} refreshKey={importCount} onStartExam={() => setScreen('exam')} />
+        )}
+      </main>
+
+      <footer className="site-footer">
+        <div className="wrap">
+          <SharePanel />
+          <p className="site-footer-note">Smart Voca · 학교 수업 과제 프로젝트 · 2026. 기록은 이 브라우저에만 저장됩니다.</p>
+        </div>
+      </footer>
 
       {changedFrom && (
         <div className="dialog-backdrop" onClick={() => setChangedFrom(null)}>
@@ -105,6 +132,6 @@ export default function App() {
           </div>
         </div>
       )}
-    </main>
+    </>
   )
 }
