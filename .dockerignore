@@ -1,0 +1,24 @@
+# 2026-11-25 - Smart Voca - 이미지에 넣지 않을 파일 (R-11). 이미지에는 server/ 만 필요하다
+.git
+.github
+.gradle
+.kotlin
+.idea
+.vscode
+.claude
+app
+build
+web
+ai-agent
+lecture
+docs
+data
+**/node_modules
+**/.venv
+**/venv
+**/__pycache__
+**/*.db
+**/.env
+**/.env.*
+server/tests
+server/data
