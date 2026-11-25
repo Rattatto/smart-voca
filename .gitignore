@@ -37,3 +37,9 @@ desktop.ini
 *.pdf
 *.tmp
 *.log
+
+# 작업 중 미추적 항목 (261125 추가)
+ai-agent/claude/261118_디자인/
+ai-agent/claude/261118_디자인작업메모.md
+ai-agent/uploads/
+AI기반프로그래밍 수업내용.txt
