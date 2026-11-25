@@ -1,0 +1,255 @@
+/* 2026-11-25 - Smart Voca - intro.html 형식 적용: 돌판 hero, 크림 본문, 자작나무 카드, 귤색 점 제목, 돌판 바닥글
+   파일 위치: web/src/ui/layout.css
+   기준: ai-agent/claude/261125_웹전환/intro.html (색감 참조 cinnamon,orange,cocoa_1.jpg)
+   색 변수는 index.css 의 것을 쓰고, intro.html 에만 있던 색은 여기서 보탠다.
+   index.css 는 다른 세션이 다루는 파일이라 건드리지 않고, 이 파일이 뒤에서 덮어쓴다 */
+
+:root {
+  /* intro.html 팔레트 전체를 여기서도 정의한다. index.css 가 어떤 상태여도 이 파일만으로 같은 화면이 나오게 하려는 것이다
+     (값은 intro.html·index.css 와 같다) */
+  --primary: #b0500c;
+  --primary-container: #fde3c8;
+  --secondary: #8d4a22;
+  --secondary-container: #efe3cd;
+  --background: #faf5ec;
+  --on-background: #4a2c20;
+  --surface: #ffffff;
+  --surface-variant: #efe3cd;
+  --on-surface-variant: #7a5644;
+  --outline: #b39880;
+  --outline-soft: rgb(141 74 34 / 22%);
+  --slate: #262c34;
+  --slate-soft: #333b46;
+  --tangerine: #f07a1e;
+  --cinnamon: #8d4a22;
+  --birch: #efe3cd;
+  --tangerine-pale: #fde3c8;
+  --on-tangerine: #2a1408; /* 밝은 귤색 위 글자 (intro.html 배지와 같음) */
+  --footer-text: #b9ad9c;
+  line-height: 1.6;
+  color: var(--on-background);
+  background: var(--background);
+}
+
+body {
+  background: var(--background);
+}
+
+/* 본문 폭은 intro.html 의 .wrap 과 같게 */
+.wrap {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* ---------- hero (첫 화면 띠) ---------- */
+.hero {
+  background: radial-gradient(120% 90% at 85% 10%, var(--slate-soft), var(--slate) 60%);
+  color: var(--background);
+  padding: 28px 0 24px;
+}
+
+.hero-inner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.eyebrow {
+  color: var(--tangerine);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  font-size: 0.85rem;
+}
+
+.hero-title {
+  margin-top: 4px;
+  font-size: clamp(1.6rem, 5.5vw, 2.4rem);
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.hero-title em {
+  font-style: normal;
+  color: var(--tangerine);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* hero 위 주 버튼: 밝은 귤색 바탕 + 진한 글자 (어두운 바탕에서 가장 눈에 띄게) */
+.button.hero-button {
+  background: var(--tangerine);
+  color: var(--on-tangerine);
+  min-height: 44px;
+}
+
+.button.hero-button.ghost {
+  background: transparent;
+  color: var(--background);
+  border-color: rgb(250 245 236 / 45%);
+}
+
+.hero .button:focus-visible {
+  outline-color: var(--tangerine);
+}
+
+/* ---------- 본문 ---------- */
+.app {
+  max-width: 880px;
+  padding-top: 28px;
+  padding-bottom: 8px;
+  gap: 16px;
+}
+
+/* 섹션 제목 앞 귤색 점 (intro.html section h2) */
+.screen-title {
+  font-size: 1.4rem;
+}
+
+.screen-title::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tangerine);
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* 기본 카드는 intro.html 의 .feature: 흰 바탕, 옅은 시나몬 테두리 */
+.card {
+  background: #ffffff;
+  border: 1px solid var(--outline-soft);
+  padding: 20px;
+}
+
+/* 배지는 알약 모양. 새 단어는 귤색, 복습은 시나몬 */
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 24px;
+  background: var(--tangerine);
+  color: var(--on-tangerine);
+}
+
+.badge.review {
+  background: var(--cinnamon);
+  color: var(--background);
+}
+
+.pos {
+  font-size: 0.8rem;
+  color: var(--cinnamon);
+  margin-left: 6px;
+}
+
+.word-number {
+  color: var(--on-surface-variant);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* TIP 은 흰 feature 카드로 */
+.tip-card {
+  background: #ffffff;
+  border: 1px solid var(--outline-soft);
+  padding: 18px 20px;
+}
+
+.tip-label {
+  color: var(--primary);
+}
+
+.tip-label::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tangerine);
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+/* ---------- 시험 ---------- */
+.choice {
+  background: #ffffff;
+  border-color: var(--outline-soft);
+  border-radius: var(--radius-card);
+  padding: 12px 18px;
+}
+
+.choice:not(:disabled):hover {
+  border-color: var(--cinnamon);
+  background: var(--tangerine-pale);
+}
+
+/* 주관식 문제는 intro.html 의 .feature.typed 처럼 자작나무 바탕 */
+.exam-meaning {
+  background: var(--birch);
+  border-radius: var(--radius-card);
+  padding: 16px 20px;
+}
+
+/* ---------- 날짜 변경 알림 ---------- */
+.dialog {
+  border-bottom: 5px solid var(--cinnamon);
+}
+
+/* ---------- 바닥글 (돌판) ---------- */
+.site-footer {
+  margin-top: 48px;
+  background: var(--slate);
+  color: var(--footer-text);
+  padding: 24px 0;
+  font-size: 0.85rem;
+}
+
+.site-footer .share {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.site-footer .field-label {
+  color: var(--background);
+}
+
+.site-footer .muted {
+  color: var(--footer-text);
+}
+
+.site-footer .share-url {
+  color: var(--tangerine);
+}
+
+.site-footer-note {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(185 173 156 / 25%);
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 20px 0 18px;
+  }
+
+  .hero-actions {
+    width: 100%;
+  }
+
+  .hero-actions .button {
+    flex: 1;
+  }
+}

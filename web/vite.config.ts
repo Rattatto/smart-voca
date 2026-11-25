@@ -28,9 +28,9 @@ export default defineConfig(({ command, isPreview }) => ({
         description: '동사만 알아도 대박이다. 매일 보는 영어 단어장',
         lang: 'ko',
         display: 'standalone',
-        // ADR-013 주 색과 흰 바탕
-        theme_color: '#C75B12',
-        background_color: '#FFFFFF',
+        // intro.html 팔레트: 돌판 (상단 띠) 과 크림 (바탕)
+        theme_color: '#262C34',
+        background_color: '#FAF5EC',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },

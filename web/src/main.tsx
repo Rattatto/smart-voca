@@ -3,8 +3,9 @@
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+// 기본 스타일(index.css)을 먼저 불러야 화면별 CSS(layout.css, study.css)가 그 위에 덮어쓸 수 있다
 import './index.css'
+import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
