@@ -128,15 +128,19 @@ function StudyCard({ item, number, total, onComplete }: StudyCardProps) {
   const states: BlankState[] = inputs.map((input) => judgeBlank(input, word.word))
   // 앞 칸이 모두 맞아야 다음 칸을 쓸 수 있다
   const isUnlocked = (index: number) => states.slice(0, index).every((state) => state === 'correct')
+  // 지금 써야 할 칸 = 아직 맞지 않은 첫 칸
+  const activeIndex = states.findIndex((state) => state !== 'correct')
+
+  // 칸이 맞으면 다음 칸으로 커서를 옮긴다. 화면에 잠금이 풀린 "뒤"(effect)에 옮겨야 한다.
+  // 입력 처리 중에 바로 옮기면 칸이 아직 disabled 라서 커서가 들어가지 않는 경우가 있었다
+  useEffect(() => {
+    if (activeIndex > 0) inputRefs.current[activeIndex]?.focus()
+  }, [activeIndex])
 
   const onChange = (index: number, value: string) => {
     if (completed) return
     const next = inputs.map((input, i) => (i === index ? value : input))
     setInputs(next)
-    if (judgeBlank(value, word.word) === 'correct' && index + 1 < next.length) {
-      // 맞으면 다음 칸으로 커서를 옮긴다. 상태 반영 후 칸이 열리므로 다음 틱에 옮긴다
-      setTimeout(() => inputRefs.current[index + 1]?.focus(), 0)
-    }
     if (isCardComplete(next, word.word, STUDY_TYPING_REPEAT)) {
       setCompleted(true)
       void onComplete(word.id)
